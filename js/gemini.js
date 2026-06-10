@@ -175,3 +175,30 @@ export async function consultCareer(answers, key) {
     }
   }
 }
+
+// Platform-provided inference: POST the structured answers to the Supabase
+// Edge Function, which holds the Gemini key server-side and builds the
+// prompt itself (see supabase/functions/career-consult/index.ts).
+export async function consultCareerViaProxy(answers, proxyUrl) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  try {
+    const res = await fetch(proxyUrl, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(answers),
+    });
+    if (res.status === 429) throw new CareerConsultError('rate', 'The platform AI is at capacity right now — try again in a few minutes, or use your own key.');
+    if (!res.ok) throw new CareerConsultError('network', 'The platform AI service had a hiccup — try again, or use your own key.');
+    const parsed = await res.json();
+    if (!validateCareerResult(parsed)) throw new CareerConsultError('response', 'The platform AI returned an unexpected response.');
+    return normalize(parsed);
+  } catch (err) {
+    if (err instanceof CareerConsultError) throw err;
+    if (err.name === 'AbortError') throw new CareerConsultError('network', 'The request timed out.');
+    throw new CareerConsultError('network', 'Could not reach the platform AI service. Check your connection.');
+  } finally {
+    clearTimeout(timer);
+  }
+}

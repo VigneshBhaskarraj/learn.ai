@@ -3,7 +3,8 @@
 import { careerQuestions, localCareerEstimate } from './data/careers.js';
 import { trackById, projectById } from './data/index.js';
 import { getState, setGeminiKey, setCareerResult, clearCareerResult, setProfile } from './storage.js';
-import { consultCareer, CareerConsultError, GEMINI_MODEL } from './gemini.js';
+import { consultCareer, consultCareerViaProxy, CareerConsultError, GEMINI_MODEL } from './gemini.js';
+import { consultProxyUrl } from './config.js';
 
 // Draft answers live in memory while the form is open.
 const draft = {
@@ -110,7 +111,9 @@ function renderForm(ctx) {
 
     <div class="card" id="key-card">
       <h3>✨ Analysis engine</h3>
-      ${hasKey
+      ${consultProxyUrl()
+        ? `<p class="hint">Powered by the platform — <b>no API key needed</b>. Your answers are analyzed by ${GEMINI_MODEL} through learn.ai's secure service.</p>`
+        : hasKey
         ? `<p class="hint">Gemini key connected (stored only on this device). Model: <b>${GEMINI_MODEL}</b>. <button class="btn-link" id="key-remove">Remove key</button></p>`
         : `<p class="hint">For a fully personalized analysis, paste a <b>free Google Gemini API key</b> — create one in ~30 seconds at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. It is stored only on this device and sent only to Google. No key? Use the offline estimate instead.</p>
            <label class="field"><span>Gemini API key</span><input id="cq-key" type="password" placeholder="AIza..." autocomplete="off"/></label>`}
@@ -166,6 +169,7 @@ function renderForm(ctx) {
 
   document.getElementById('career-run').addEventListener('click', async () => {
     if (!ensureReady()) return;
+    if (consultProxyUrl()) return runConsult(ctx, { proxy: consultProxyUrl() });
     const keyInput = document.getElementById('cq-key');
     if (keyInput?.value.trim()) setGeminiKey(keyInput.value);
     const key = getState().settings?.geminiKey;
@@ -173,7 +177,7 @@ function renderForm(ctx) {
       hint.textContent = 'Paste a Gemini API key above — or choose the offline estimate.';
       return;
     }
-    await runConsult(ctx, key);
+    await runConsult(ctx, { key });
   });
 
   document.getElementById('career-run-offline').addEventListener('click', () => {
@@ -186,12 +190,14 @@ function renderForm(ctx) {
   });
 }
 
-async function runConsult(ctx, key) {
+async function runConsult(ctx, engine) {
   busy = true;
   ctx.rerender();
   const answers = { ...draft };
   try {
-    const result = await consultCareer(answers, key);
+    const result = engine.proxy
+      ? await consultCareerViaProxy(answers, engine.proxy)
+      : await consultCareer(answers, engine.key);
     setCareerResult(answers, result, 'gemini');
     formOpen = false;
     ctx.toast('Your career consult is ready.', '✨');

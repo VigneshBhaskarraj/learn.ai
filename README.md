@@ -67,8 +67,30 @@ Learning answers *"how does AI work?"* — the Career tab answers *"where do I f
 **How the inference works** (`js/gemini.js`):
 - The questionnaire answers + a curated catalog of 9 AI-era roles are bound into **one prompt**, sent in **one call** to `gemini-2.5-flash` with a strict JSON `responseSchema` (structured output — no parsing roulette).
 - 45s timeout, one automatic retry on transient failures only, typed errors so the UI can speak human, response validation + normalization before anything is rendered or stored.
-- **Bring your own key:** GitHub Pages has no backend, so embedding a key would expose it to the world. Users paste a free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — stored only in their device's localStorage, sent only to Google.
-- **No key? Still works:** a rule-based offline estimator (`localCareerEstimate`) scores the same role catalog against the answers — clearly labeled as the offline version.
+**Engine selection** (automatic, in order):
+1. **Platform proxy** — if `consultProxyUrl` is set in `js/config.js`, every visitor gets the analysis with **no API key**: the static app POSTs the structured answers to a Supabase Edge Function that holds the Gemini key server-side (see below).
+2. **Bring your own key** — users paste a free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey); stored only in their device's localStorage, sent only to Google.
+3. **Offline estimator** — a rule-based scorer (`localCareerEstimate`) over the same role catalog; clearly labeled.
+
+### Setting up the platform key (Supabase Edge Function)
+
+A GitHub secret can't protect a key on GitHub Pages — Pages is static, so anything injected at build time ships to every visitor's browser. The proxy keeps the key genuinely server-side:
+
+```bash
+# one-time, from the repo root (needs the Supabase CLI + a free project)
+supabase link --project-ref <your-project-ref>
+supabase functions deploy career-consult --no-verify-jwt
+supabase secrets set GEMINI_API_KEY=<your AI Studio key>
+supabase secrets set ALLOWED_ORIGINS=https://<you>.github.io   # comma-separated
+```
+
+Then set the function URL in `js/config.js`:
+
+```js
+consultProxyUrl: 'https://<your-project-ref>.supabase.co/functions/v1/career-consult'
+```
+
+Abuse resistance is built into the function (`supabase/functions/career-consult/index.ts`): it accepts only **structured answers** (never raw prompts, so it can't be used as a generic Gemini proxy), validates every field against whitelists and length caps, enforces an origin allowlist, and applies a best-effort per-IP rate limit. To harden further for heavy traffic, move the rate limit into a Supabase table.
 
 ## Architecture
 
