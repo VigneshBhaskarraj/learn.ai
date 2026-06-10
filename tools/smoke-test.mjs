@@ -100,6 +100,46 @@ check(progress.treeStats().stage === 7, 'stage 7: flourishing banyan');
 next = progress.nextStep();
 check(next.type === 'project', 'next step now a remaining project');
 
+console.log('\n— Career consult engine —');
+const careers = await import('../js/data/careers.js');
+const gemini = await import('../js/gemini.js');
+
+check(careers.roleCatalog.length >= 8, `role catalog has ${careers.roleCatalog.length} roles`);
+for (const r of careers.roleCatalog) {
+  check(Boolean(r.title && r.tagline && r.demand && r.naturalFrom), `${r.id} catalog entry complete`);
+  check(['po', 'dev', 'ba', 'qa', 'lead'].includes(r.track), `${r.id} maps to a valid track`);
+  check(r.projects.every((p) => data.projectById(p)), `${r.id} maps to valid projects`);
+}
+
+// The RPA-developer-who-manages-people case from the field:
+const rpaAnswers = {
+  currentRole: 'RPA Developer & team resource manager',
+  experience: '9-15',
+  responsibilities: ['automation', 'people', 'delivery'],
+  responsibilitiesOther: 'UiPath CoE work',
+  techComfort: 'lowcode',
+  enjoys: ['building', 'leading'],
+  domain: 'insurance',
+  direction: 'open',
+};
+const prompt = gemini.buildCareerPrompt(rpaAnswers);
+check(prompt.includes('RPA Developer & team resource manager'), 'prompt binds current role');
+check(prompt.includes('Building automations / integrations'), 'prompt binds responsibility labels');
+check(prompt.includes('UiPath CoE work'), 'prompt binds free-text extras');
+check(prompt.includes('insurance'), 'prompt binds domain');
+check(prompt.includes('Agentic Automation Engineer'), 'prompt grounds on role catalog');
+check(prompt.includes('fitScore'), 'prompt specifies output contract');
+
+const est = careers.localCareerEstimate(rpaAnswers);
+check(est.roles.length === 3, 'offline estimate returns 3 roles');
+const estTitles = est.roles.map((r) => r.title);
+check(estTitles.includes('Agentic Automation Engineer'), `RPA profile surfaces agentic automation (${estTitles.join(' | ')})`);
+check(estTitles.includes('AI Delivery Lead / AI Program Manager'), 'RPA+people profile surfaces delivery lead');
+check(gemini.validateCareerResult(est), 'offline estimate passes the same validation as Gemini output');
+check(est.roles.every((r) => r.fitScore >= 0 && r.fitScore <= 100), 'fit scores in range');
+
+check(!gemini.validateCareerResult({ summary: 'x', roles: [{}], honestNote: 'y' }), 'validator rejects malformed results');
+
 console.log('\n— Tree renderer —');
 for (let stage = 0; stage <= 7; stage++) {
   const fake = { innerHTML: '' };

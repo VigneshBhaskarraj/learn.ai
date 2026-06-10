@@ -79,6 +79,10 @@ h1, h2, h3 { line-height: 1.25; margin: 0 0 0.5em; font-weight: 750; letter-spac
 }
 .nav-icon { font-size: 1.3rem; line-height: 1; }
 .nav-item.active { color: var(--accent); background: var(--accent-soft); }
+@media (max-width: 430px) {
+  .nav-item { padding: 4px 7px; }
+  .nav-label { font-size: 0.62rem; }
+}
 
 @media (min-width: 920px) {
   .nav {
@@ -361,6 +365,45 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .profile-card h2 { margin-bottom: 4px; font-size: 1.25rem; }
 .kbd { display: inline-block; padding: 1px 7px; border-radius: 6px; background: rgba(255,255,255,0.1); font-size: 0.85em; }
 .about p { font-size: 0.92rem; }
+
+/* ---------- career consult ---------- */
+.career-hero { text-align: center; padding: 12px 0 6px; }
+.career-hero-emoji { font-size: 2.6rem; }
+.career-teaser { border-color: rgba(244, 180, 64, 0.4); background: linear-gradient(135deg, rgba(244, 180, 64, 0.10), rgba(47, 184, 127, 0.06)); }
+.career-teaser .cc-label { color: var(--gold); }
+.career-teaser h3 { margin-bottom: 4px; }
+.career-teaser p { color: var(--muted); margin: 0 0 8px; font-size: 0.9rem; }
+
+.cform .field { margin: 14px 0 18px; }
+.cq { margin: 16px 0 20px; }
+.cq-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-bottom: 9px; }
+.cq input { width: 100%; margin-top: 10px; padding: 12px 14px; font-size: 0.95rem; color: var(--text); background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); border-radius: 12px; outline: none; }
+.cq input:focus { border-color: var(--accent); }
+.btn-link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: inherit; padding: 0; text-decoration: underline; }
+
+.career-loading { text-align: center; padding: 44px 24px; }
+.seedling-pulse { font-size: 3rem; animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.18); opacity: 1; } }
+.loading-bar { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden; max-width: 280px; margin: 18px auto 0; }
+.loading-fill { height: 100%; width: 40%; border-radius: 4px; background: linear-gradient(90deg, #2fb87f, #f4b440); animation: slide 1.4s ease-in-out infinite; }
+@keyframes slide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+
+.consult-summary p { font-size: 0.98rem; }
+.honest-note { margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 0.9rem; background: var(--gold-soft); border: 1px solid rgba(244, 180, 64, 0.3); }
+.role-card { padding: 20px; }
+.role-head { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+.role-rank { font-size: 0.8rem; font-weight: 800; color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(244,180,64,0.35); border-radius: 10px; padding: 5px 9px; flex-shrink: 0; }
+.role-title { flex: 1; min-width: 0; }
+.role-title h2 { font-size: 1.2rem; margin: 0 0 3px; }
+.role-title p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+.fit-ring { flex-shrink: 0; }
+.fit-text { fill: var(--text); font-size: 16px; font-weight: 800; }
+.role-section { margin: 14px 0; }
+.role-section h4 { margin: 0 0 6px; font-size: 0.92rem; color: #cfe9da; }
+.role-section ul, .role-section ol { margin: 0; padding-left: 1.25em; }
+.role-section li { margin: 0.35em 0; font-size: 0.92rem; }
+.role-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.role-links .btn { font-size: 0.86rem; padding: 10px 14px; }
 
 /* ---------- toast & celebration ---------- */
 .toast {

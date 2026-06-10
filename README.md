@@ -28,6 +28,7 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 | 🍎 **The Fruits** | 6 hands-on projects with briefs, steps and self-checks: Prompt Portfolio · AI Workflow Audit · AI Feature One-Pager · Tiny RAG Assistant · Mini Eval · Client-Ready AI Briefing |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
 | 📈 **Tracking** | XP & levels, daily streaks, weekly activity, resume-where-you-left-off, milestone celebrations |
+| 🧭 **Career Consult** | A 5-minute questionnaire → **3 realistic AI-era pivot roles** with fit scores, transferable skills, honest gaps, a 90-day plan and readiness signals — powered by one Gemini API call (bring your own free key) or an offline rule-based estimator |
 
 54 lessons, 38 quiz questions, 6 projects — every lesson with key takeaways, a leader's quote, and optional "go deeper" links (Karpathy's Zero to Hero, One Useful Thing, The Batch…).
 
@@ -58,6 +59,16 @@ Yes — GitHub Pages + PWA works. Pages serves over HTTPS, which is all a servic
 - **Desktop Chrome/Edge:** install icon in the address bar.
 
 Once installed, the service worker (`sw.js`) serves everything from cache — the full curriculum works offline.
+
+## Career Consult (the second pillar)
+
+Learning answers *"how does AI work?"* — the Career tab answers *"where do I fit?"*. Example: an RPA developer who also manages team resources gets **Agentic Automation Engineer**, **AI Delivery Lead** and **AI Solution Architect**, each with why-you-fit reasoning that references their actual responsibilities, the skills they already carry, the honest gaps, and a 90-day plan that links straight into the platform's tracks and projects (one tap switches their learning branch to match).
+
+**How the inference works** (`js/gemini.js`):
+- The questionnaire answers + a curated catalog of 9 AI-era roles are bound into **one prompt**, sent in **one call** to `gemini-2.5-flash` with a strict JSON `responseSchema` (structured output — no parsing roulette).
+- 45s timeout, one automatic retry on transient failures only, typed errors so the UI can speak human, response validation + normalization before anything is rendered or stored.
+- **Bring your own key:** GitHub Pages has no backend, so embedding a key would expose it to the world. Users paste a free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — stored only in their device's localStorage, sent only to Google.
+- **No key? Still works:** a rule-based offline estimator (`localCareerEstimate`) scores the same role catalog against the answers — clearly labeled as the offline version.
 
 ## Architecture
 

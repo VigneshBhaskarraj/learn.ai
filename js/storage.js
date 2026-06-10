@@ -15,7 +15,8 @@ const defaultState = () => ({
   streak: { count: 0, lastDay: null },
   xp: 0,
   celebratedStage: 0,
-  settings: { reducedMotion: false },
+  settings: { reducedMotion: false, geminiKey: '' },
+  career: { answers: null, result: null, source: null, ts: null },
 });
 
 const localAdapter = {
@@ -118,6 +119,22 @@ export function setProjectCheck(projectId, idx, value, totalChecks) {
 
 export function setCelebratedStage(stage) {
   state.celebratedStage = stage;
+  persist();
+}
+
+export function setGeminiKey(key) {
+  state.settings = state.settings || {};
+  state.settings.geminiKey = key.trim();
+  persist();
+}
+
+export function setCareerResult(answers, result, source) {
+  state.career = { answers, result, source, ts: new Date().toISOString() };
+  touchActivity();
+}
+
+export function clearCareerResult() {
+  state.career = { answers: state.career?.answers || null, result: null, source: null, ts: null };
   persist();
 }
 
