@@ -258,7 +258,10 @@ Deno.serve(async (req) => {
       contents: [{ role: 'user', parts: [{ text: buildPrompt(answers) }] }],
       generationConfig: {
         temperature: 0.5,
-        maxOutputTokens: 4096,
+        maxOutputTokens: 8192,
+        // 2.5-class models think by default and thought tokens eat the output
+        // budget — this is a structured extraction task, thinking off.
+        thinkingConfig: { thinkingBudget: 0 },
         responseMimeType: 'application/json',
         responseSchema: RESPONSE_SCHEMA,
       },

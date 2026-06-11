@@ -8,7 +8,7 @@
 // Can also be overridden without editing this file by defining
 // globalThis.LEARNAI_CONFIG = { consultProxyUrl: '...' } before app load.
 export const CONFIG = {
-  consultProxyUrl: '',
+  consultProxyUrl: 'https://dryulspnjczdhmchmsfi.supabase.co/functions/v1/career-consult',
 };
 
 export function consultProxyUrl() {
