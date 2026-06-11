@@ -3,7 +3,7 @@
 import { careerQuestions, localCareerEstimate } from './data/careers.js';
 import { trackById, projectById } from './data/index.js';
 import { getState, setGeminiKey, setCareerResult, clearCareerResult, setProfile } from './storage.js';
-import { consultCareer, consultCareerViaProxy, CareerConsultError, GEMINI_MODEL } from './gemini.js';
+import { consultCareer, consultCareerViaProxy, CareerConsultError } from './gemini.js';
 import { consultProxyUrl } from './config.js';
 
 // Draft answers live in memory while the form is open.
@@ -112,11 +112,11 @@ function renderForm(ctx) {
     <div class="card" id="key-card">
       <h3>✨ Analysis engine</h3>
       ${consultProxyUrl()
-        ? `<p class="hint">Powered by the platform — <b>no API key needed</b>. Your answers are analyzed by ${GEMINI_MODEL} through learn.ai's secure service.</p>`
+        ? `<p class="hint">Powered by learn.ai's secure AI service — <b>no setup needed</b>. Your answers are analyzed and mapped onto your learning path.</p>`
         : hasKey
-        ? `<p class="hint">Gemini key connected (stored only on this device). Model: <b>${GEMINI_MODEL}</b>. <button class="btn-link" id="key-remove">Remove key</button></p>`
-        : `<p class="hint">For a fully personalized analysis, paste a <b>free Google Gemini API key</b> — create one in ~30 seconds at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. It is stored only on this device and sent only to Google. No key? Use the offline estimate instead.</p>
-           <label class="field"><span>Gemini API key</span><input id="cq-key" type="password" placeholder="AIza..." autocomplete="off"/></label>`}
+        ? `<p class="hint">API key connected (stored only on this device). <button class="btn-link" id="key-remove">Remove key</button></p>`
+        : `<p class="hint">For a fully personalized analysis, paste a <b>free Google AI Studio API key</b> — create one in ~30 seconds at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. It is stored only on this device and sent only to Google. No key? Use the offline estimate instead.</p>
+           <label class="field"><span>API key</span><input id="cq-key" type="password" placeholder="AIza..." autocomplete="off"/></label>`}
     </div>
 
     <button class="btn btn-primary btn-big" id="career-run">🔮 Get my 3 AI-era roles</button>
@@ -186,7 +186,7 @@ function renderForm(ctx) {
     setCareerResult(answers, localCareerEstimate(answers), 'offline');
     formOpen = false;
     ctx.rerender();
-    ctx.toast('Offline estimate ready — add a Gemini key any time for the full version.', '🧭');
+    ctx.toast('Offline estimate ready — run the AI analysis any time for the full version.', '🧭');
   });
 }
 
@@ -214,9 +214,9 @@ async function runConsult(ctx, engine) {
 function renderLoading(ctx) {
   ctx.shell('career', `
     <div class="career-loading card">
-      <div class="seedling-pulse">🌱</div>
-      <h2>Reading your profile…</h2>
-      <p class="hint">Binding your answers, consulting ${GEMINI_MODEL}, and mapping the result onto your learning path. Usually under 20 seconds.</p>
+      <div class="seedling-pulse">🧭</div>
+      <h2>Analyzing your profile…</h2>
+      <p class="hint">Mapping your experience and strengths onto AI-era roles. Usually under 15 seconds.</p>
       <div class="loading-bar"><div class="loading-fill"></div></div>
     </div>
   `);
@@ -248,10 +248,14 @@ function renderResult(ctx, career) {
         ${fitRing(role.fitScore)}
       </div>
       <div class="role-section"><h4>💪 Why you fit</h4><ul>${role.whyYouFit.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-      <div class="role-section"><h4>🎒 You already bring</h4><div class="chips">${role.transferableSkills.map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div></div>
-      <div class="role-section"><h4>🧗 Honest gaps to close</h4><ul>${role.gaps.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
-      <div class="role-section"><h4>📅 Your first 90 days</h4><ol>${role.first90Days.map((x) => `<li>${esc(x)}</li>`).join('')}</ol></div>
-      <div class="role-section"><h4>✅ You're ready when…</h4><ul>${role.readinessSignals.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      <details class="role-fold"><summary>🎒 You already bring <span class="fold-count">${role.transferableSkills.length}</span></summary>
+        <div class="chips">${role.transferableSkills.map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div></details>
+      <details class="role-fold"><summary>🧗 Honest gaps to close <span class="fold-count">${role.gaps.length}</span></summary>
+        <ul>${role.gaps.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>
+      <details class="role-fold" ${i === 0 ? 'open' : ''}><summary>📅 Your first 90 days <span class="fold-count">${role.first90Days.length} steps</span></summary>
+        <ol>${role.first90Days.map((x) => `<li>${esc(x)}</li>`).join('')}</ol></details>
+      <details class="role-fold"><summary>✅ You're ready when… <span class="fold-count">${role.readinessSignals.length}</span></summary>
+        <ul>${role.readinessSignals.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>
       ${track || projects.length ? `<div class="role-links">
         ${track ? `<button class="btn btn-primary" data-switch-track="${track.id}">🌿 Prepare with the ${esc(track.label)} track</button>` : ''}
         ${projects.map((p) => `<a class="btn btn-ghost" href="#/project/${p.id}">${p.emoji} ${esc(p.title)}</a>`).join('')}
@@ -261,7 +265,7 @@ function renderResult(ctx, career) {
 
   shell('career', `
     <h1 class="page-title">Your AI-era career map</h1>
-    <p class="page-sub">For: <b>${esc(answers.currentRole || 'you')}</b> · ${source === 'gemini' ? `✨ Gemini analysis` : '⚙️ offline estimate'} · ${when}</p>
+    <p class="page-sub">For: <b>${esc(answers.currentRole || 'you')}</b> · ${source === 'gemini' ? `✨ AI analysis` : '⚙️ offline estimate'} · ${when}</p>
     <div class="card consult-summary"><h3>The picture</h3><p>${esc(result.summary)}</p>
       <div class="honest-note">🪞 <b>Honest note:</b> ${esc(result.honestNote)}</div></div>
     ${roleCards}
@@ -269,7 +273,7 @@ function renderResult(ctx, career) {
       <button class="btn btn-ghost" id="career-redo">↻ Redo the consult</button>
       <button class="btn btn-danger" id="career-clear">Clear result</button>
     </div>
-    ${source === 'offline' ? '<p class="fineprint">This was the rule-based offline estimate. Add a free Gemini key in a redo for the fully tailored version.</p>' : ''}
+    ${source === 'offline' ? '<p class="fineprint">This was the rule-based offline estimate. Redo with the AI analysis for a fully tailored version.</p>' : ''}
   `);
 
   document.querySelectorAll('[data-switch-track]').forEach((b) =>

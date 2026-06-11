@@ -140,6 +140,29 @@ check(est.roles.every((r) => r.fitScore >= 0 && r.fitScore <= 100), 'fit scores 
 
 check(!gemini.validateCareerResult({ summary: 'x', roles: [{}], honestNote: 'y' }), 'validator rejects malformed results');
 
+console.log('\n— Dual progress styles —');
+const dash = await import('../js/dashboard.js');
+for (const style of ['tree', 'dashboard']) {
+  const copy = progress.styleCopy(style);
+  check(copy.stageNames.length === 8 && copy.stageMessages.length === 8, `${style} copy has 8 stages`);
+  check(Boolean(copy.quizPassTitle && copy.projectToast && copy.navLabel), `${style} copy bundle complete`);
+}
+check(progress.xpLevel(600, 'tree').name === 'Branching Tree', 'tree level names');
+check(progress.xpLevel(600, 'dashboard').name === 'Specialist', 'dashboard level names');
+{
+  const fake = { innerHTML: '' };
+  dash.renderDashboardFull(fake);
+  check(fake.innerHTML.includes('Skill matrix') && fake.innerHTML.includes('Capstone'), 'dashboard full view renders matrix + capstones');
+  check(fake.innerHTML.includes('Certified'), 'dashboard shows certified skills (state is fully complete here)');
+  const mini = { innerHTML: '' };
+  dash.renderDashboardMini(mini);
+  check(mini.innerHTML.includes('<svg'), 'dashboard mini ring renders');
+}
+{
+  const careerSrc = await (await import('node:fs/promises')).readFile(new URL('../js/career.js', import.meta.url), 'utf8');
+  check(!/gemini[-_ ]?2|GEMINI_MODEL/i.test(careerSrc.replace(/from '\.\/gemini\.js'/, '')), 'career UI does not name the model');
+}
+
 console.log('\n— Tree renderer —');
 for (let stage = 0; stage <= 7; stage++) {
   const fake = { innerHTML: '' };

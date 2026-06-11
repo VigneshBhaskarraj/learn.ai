@@ -15,7 +15,7 @@ const defaultState = () => ({
   streak: { count: 0, lastDay: null },
   xp: 0,
   celebratedStage: 0,
-  settings: { reducedMotion: false, geminiKey: '' },
+  settings: { reducedMotion: false, geminiKey: '', progressStyle: 'tree' },
   career: { answers: null, result: null, source: null, ts: null },
 });
 
@@ -119,6 +119,16 @@ export function setProjectCheck(projectId, idx, value, totalChecks) {
 
 export function setCelebratedStage(stage) {
   state.celebratedStage = stage;
+  persist();
+}
+
+export function progressStyle() {
+  return state.settings?.progressStyle === 'dashboard' ? 'dashboard' : 'tree';
+}
+
+export function setProgressStyle(style) {
+  state.settings = state.settings || {};
+  state.settings.progressStyle = style === 'dashboard' ? 'dashboard' : 'tree';
   persist();
 }
 

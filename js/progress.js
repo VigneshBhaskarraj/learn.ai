@@ -73,19 +73,20 @@ export function overallStats() {
   };
 }
 
-// XP levels — small ladder for a sense of motion.
+// XP levels — small ladder for a sense of motion. [xp floor, tree name, dashboard name]
 const LEVELS = [
-  [0, 'Seed'],
-  [40, 'Sprout'],
-  [110, 'Seedling'],
-  [220, 'Sapling'],
-  [360, 'Young Tree'],
-  [540, 'Branching Tree'],
-  [760, 'Banyan'],
-  [1000, 'Great Banyan'],
+  [0, 'Seed', 'Starter'],
+  [40, 'Sprout', 'Learner'],
+  [110, 'Seedling', 'Practitioner'],
+  [220, 'Sapling', 'Skilled'],
+  [360, 'Young Tree', 'Advanced'],
+  [540, 'Branching Tree', 'Specialist'],
+  [760, 'Banyan', 'Expert'],
+  [1000, 'Great Banyan', 'Master'],
 ];
 
-export function xpLevel(xp) {
+export function xpLevel(xp, style = 'tree') {
+  const nameIdx = style === 'dashboard' ? 2 : 1;
   let level = LEVELS[0];
   let next = null;
   for (let i = 0; i < LEVELS.length; i++) {
@@ -94,7 +95,7 @@ export function xpLevel(xp) {
       next = LEVELS[i + 1] || null;
     }
   }
-  return { name: level[1], floor: level[0], next: next ? { at: next[0], name: next[1] } : null };
+  return { name: level[nameIdx], floor: level[0], next: next ? { at: next[0], name: next[nameIdx] } : null };
 }
 
 // ---- Tree growth model ----
@@ -144,3 +145,50 @@ export const STAGE_MESSAGES = [
   'Track complete. Like a banyan, your knowledge now has aerial roots — it supports itself.',
   'Projects borne as fruit. This tree feeds others now — share what you know.',
 ];
+
+// Professional (dashboard) wording for the same 8 milestones.
+export const PRO_STAGE_NAMES = [
+  'Enrolled',
+  'Getting started',
+  'First skill certified',
+  'Building momentum',
+  'Foundation complete',
+  'Specializing',
+  'Track certified',
+  'Portfolio ready',
+];
+
+export const PRO_STAGE_MESSAGES = [
+  'Your learning path is set. The first lesson takes about seven minutes.',
+  'First lesson complete — momentum established.',
+  'First module mastered: lessons plus knowledge check. That is a certified skill.',
+  'Three skills certified — halfway through the foundation.',
+  'All six core skills certified. Your specialist track is next.',
+  'Your role-specific track is underway. This is where it gets practical.',
+  'Foundation and specialist track complete. Capstone projects await.',
+  'Certified skills plus delivered capstones — a portfolio worth showing.',
+];
+
+// Style-aware copy bundle so views never hardcode botanical or corporate wording.
+export function styleCopy(style) {
+  const dash = style === 'dashboard';
+  return {
+    stageNames: dash ? PRO_STAGE_NAMES : STAGE_NAMES,
+    stageMessages: dash ? PRO_STAGE_MESSAGES : STAGE_MESSAGES,
+    navLabel: dash ? 'Progress' : 'Tree',
+    navIcon: dash ? '📊' : '🌳',
+    progressTitle: dash ? 'Your progress' : 'The Banyan of',
+    quizPassTitle: dash ? 'Skill certified!' : 'Branch grown!',
+    quizPassDetail: dash
+      ? 'Certification recorded on your skills dashboard. +25 XP.'
+      : 'Your banyan just grew a new branch. +25 XP.',
+    quizCta: dash ? 'View progress 📊' : 'See your tree 🌳',
+    lessonToast: dash ? '+10 XP — progress recorded.' : '+10 XP — your tree felt that.',
+    projectToast: dash ? '+50 XP — capstone badge earned!' : '+50 XP — a golden fruit grows on your banyan!',
+    projectWord: dash ? 'capstones' : 'fruits 🍎',
+    projectsTitle: dash ? 'Projects — capstones 🎖️' : 'Projects — the fruits 🍎',
+    pathFoundation: dash ? '🌍 Core Foundation' : '🌍 The Roots — Foundation',
+    pathTrack: dash ? 'Specialist Track' : 'Your Branch',
+    pathProjects: dash ? '🎖️ Capstone Projects' : '🍎 The Fruits — Projects',
+  };
+}

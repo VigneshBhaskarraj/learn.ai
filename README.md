@@ -28,6 +28,7 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 | 🍎 **The Fruits** | 6 hands-on projects with briefs, steps and self-checks: Prompt Portfolio · AI Workflow Audit · AI Feature One-Pager · Tiny RAG Assistant · Mini Eval · Client-Ready AI Briefing |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
 | 📈 **Tracking** | XP & levels, daily streaks, weekly activity, resume-where-you-left-off, milestone celebrations |
+| 🎨 **Two progress styles** | Pick at onboarding, switch anytime in Profile: the playful **Growth Tree** (banyan, branches, fruits) or the professional **Skills Dashboard** (completion ring, certified-skill matrix, capstone badges) — same tracking engine underneath |
 | 🧭 **Career Consult** | A 5-minute questionnaire → **3 realistic AI-era pivot roles** with fit scores, transferable skills, honest gaps, a 90-day plan and readiness signals — powered by one Gemini API call (bring your own free key) or an offline rule-based estimator |
 
 54 lessons, 38 quiz questions, 6 projects — every lesson with key takeaways, a leader's quote, and optional "go deeper" links (Karpathy's Zero to Hero, One Useful Thing, The Batch…).
