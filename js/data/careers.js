@@ -182,7 +182,7 @@ export function localCareerEstimate(answers) {
   const max = Math.max(1, scored[0].score);
 
   return {
-    summary: `Based on your answers (offline estimate — connect a Gemini key for a fully personalized analysis), your experience in ${answers.currentRole || 'your current role'} maps strongly onto ${scored[0].role.title}. The routine layer of your current work is being absorbed by AI — but the judgment, domain knowledge and delivery discipline you have built transfer directly into the roles below.`,
+    summary: `Based on your answers (offline estimate — run the AI analysis for a fully personalized version), your experience in ${answers.currentRole || 'your current role'} maps strongly onto ${scored[0].role.title}. The routine layer of your current work is being absorbed by AI — but the judgment, domain knowledge and delivery discipline you have built transfer directly into the roles below.`,
     roles: scored.map(({ role, score }, i) => ({
       title: role.title,
       fitScore: Math.max(45, Math.min(95, Math.round(60 + (score / max) * 35 - i * 6))),
@@ -208,6 +208,6 @@ export function localCareerEstimate(answers) {
       suggestedTrack: role.track,
       suggestedProjects: role.projects,
     })),
-    honestNote: 'This offline estimate is rule-based. Add a free Gemini API key in the Career tab for an analysis tailored to your exact words.',
+    honestNote: 'This offline estimate is rule-based. Run the full AI analysis for a version tailored to your exact words.',
   };
 }

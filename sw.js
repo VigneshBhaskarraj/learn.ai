@@ -1,5 +1,5 @@
 // learn.ai service worker — precache the app shell, serve cache-first with background refresh.
-const VERSION = 'learnai-v1.2.0';
+const VERSION = 'learnai-v1.3.0';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './js/storage.js',
   './js/progress.js',
   './js/tree.js',
+  './js/dashboard.js',
   './js/career.js',
   './js/gemini.js',
   './js/config.js',

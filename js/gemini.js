@@ -59,6 +59,8 @@ Also produce:
 - summary: 3-4 sentences addressed to the person ("you"), connecting their current work to the AI era: what is genuinely changing about their role, why their experience still matters, and the single most important move to make first. Specific to them, zero platitudes.
 - honestNote: one candid sentence about the biggest risk or misconception this specific person should watch out for in their pivot.
 
+BREVITY (important): every bullet under 15 words; each first90Days step under 18 words; summary exactly 3 sentences; tagline under 12 words. Dense and specific beats long.
+
 Tone: direct, warm, concrete. No corporate filler. British or US spelling both fine.`;
 }
 

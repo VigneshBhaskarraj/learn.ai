@@ -366,6 +366,34 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .kbd { display: inline-block; padding: 1px 7px; border-radius: 6px; background: rgba(255,255,255,0.1); font-size: 0.85em; }
 .about p { font-size: 0.92rem; }
 
+/* ---------- skills dashboard (professional progress style) ---------- */
+.dash-mini { display: flex; justify-content: center; }
+.dash-ring-pct { fill: var(--text); font-size: 26px; font-weight: 800; }
+.dash-ring-label { fill: var(--muted); font-size: 11px; font-weight: 600; }
+.dash-overview { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; justify-content: center; }
+.dash-overview-stats { display: flex; gap: 22px; }
+.dash-stat { text-align: center; }
+.dash-stat b { display: block; font-size: 1.5rem; }
+.dash-stat span { font-size: 0.74rem; color: var(--muted); }
+.skill-matrix { display: grid; gap: 12px; margin-top: 14px; }
+.skill-row { display: grid; grid-template-columns: minmax(120px, 1.2fr) 2fr auto; gap: 12px; align-items: center; }
+.skill-name { font-size: 0.88rem; font-weight: 650; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.skill-kind { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: rgba(255,255,255,0.07); padding: 2px 7px; border-radius: 6px; }
+.skill-row.certified .skill-kind { color: var(--accent); background: var(--accent-soft); }
+.skill-bar { height: 8px; border-radius: 6px; background: rgba(255,255,255,0.09); overflow: hidden; }
+.skill-fill { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #2fb87f, #46d399); transition: width 0.6s ease; }
+.skill-row.certified .skill-fill { background: linear-gradient(90deg, #2fb87f, #f4b440); }
+.skill-pct { font-size: 0.78rem; color: var(--muted); min-width: 40px; text-align: right; }
+.cert-badge { color: var(--accent); font-weight: 750; white-space: nowrap; }
+.capstone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+.capstone { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 14px 10px; border-radius: 14px; border: 1px dashed var(--card-border); color: var(--muted); transition: border-color 0.15s, transform 0.15s; }
+.capstone:hover { transform: translateY(-2px); border-color: rgba(47,184,127,0.5); }
+.capstone.earned { border-style: solid; border-color: rgba(244, 180, 64, 0.45); background: var(--gold-soft); color: var(--text); }
+.capstone-icon { font-size: 1.6rem; }
+.capstone-name { font-size: 0.78rem; font-weight: 650; line-height: 1.3; }
+.capstone-state { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+.capstone.earned .capstone-state { color: var(--gold); }
+
 /* ---------- career consult ---------- */
 .career-hero { text-align: center; padding: 12px 0 6px; }
 .career-hero-emoji { font-size: 2.6rem; }
@@ -398,6 +426,15 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .role-title p { margin: 0; color: var(--muted); font-size: 0.85rem; }
 .fit-ring { flex-shrink: 0; }
 .fit-text { fill: var(--text); font-size: 16px; font-weight: 800; }
+.role-fold { margin: 8px 0; border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
+.role-fold summary { cursor: pointer; list-style: none; padding: 11px 14px; font-size: 0.92rem; font-weight: 700; color: #cfe9da; display: flex; align-items: center; gap: 8px; user-select: none; }
+.role-fold summary::-webkit-details-marker { display: none; }
+.role-fold summary::after { content: '▸'; margin-left: auto; color: var(--muted); transition: transform 0.2s; }
+.role-fold[open] summary::after { transform: rotate(90deg); }
+.fold-count { font-size: 0.7rem; font-weight: 800; color: var(--muted); background: rgba(255,255,255,0.07); padding: 2px 8px; border-radius: 8px; }
+.role-fold > ul, .role-fold > ol { margin: 0; padding: 0 16px 12px 34px; }
+.role-fold > ul li, .role-fold > ol li { margin: 0.35em 0; font-size: 0.92rem; }
+.role-fold > .chips { padding: 0 14px 12px; margin: 0; }
 .role-section { margin: 14px 0; }
 .role-section h4 { margin: 0 0 6px; font-size: 0.92rem; color: #cfe9da; }
 .role-section ul, .role-section ol { margin: 0; padding-left: 1.25em; }

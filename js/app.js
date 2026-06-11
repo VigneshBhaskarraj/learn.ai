@@ -1,8 +1,9 @@
 // learn.ai — main application: hash router, views, quiz engine, celebrations.
 import { foundation, tracks, personas, levels, trackById, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
-import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey } from './storage.js';
-import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, STAGE_NAMES, STAGE_MESSAGES } from './progress.js';
+import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle } from './storage.js';
+import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, styleCopy } from './progress.js';
 import { renderTree } from './tree.js';
+import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
 
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -40,18 +41,23 @@ function maybeCelebrate() {
 }
 
 function showCelebration(stats) {
+  const copy = styleCopy(progressStyle());
   const overlay = document.createElement('div');
   overlay.className = 'celebrate-overlay';
   overlay.innerHTML = `
     <div class="celebrate-card">
       <div class="celebrate-burst">${'<i></i>'.repeat(14)}</div>
       <div class="celebrate-tree"></div>
-      <h2>${esc(STAGE_NAMES[stats.stage])}</h2>
-      <p>${esc(STAGE_MESSAGES[stats.stage])}</p>
-      <button class="btn btn-primary" data-close>Keep growing</button>
+      <h2>${esc(copy.stageNames[stats.stage])}</h2>
+      <p>${esc(copy.stageMessages[stats.stage])}</p>
+      <button class="btn btn-primary" data-close>${progressStyle() === 'dashboard' ? 'Keep going' : 'Keep growing'}</button>
     </div>`;
   document.body.appendChild(overlay);
-  renderTree($('.celebrate-tree', overlay), stats, { mini: true });
+  if (progressStyle() === 'dashboard') {
+    $('.celebrate-tree', overlay).innerHTML = `<div class="dash-mini">${completionRing(pathCompletionPct(), 150, 'complete')}</div>`;
+  } else {
+    renderTree($('.celebrate-tree', overlay), stats, { mini: true });
+  }
   requestAnimationFrame(() => overlay.classList.add('show'));
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay || e.target.closest('[data-close]')) {
@@ -90,11 +96,12 @@ function moduleCard(mod, locked = false) {
 }
 
 function navBar(active) {
+  const copy = styleCopy(progressStyle());
   const items = [
     ['home', '🏠', 'Home'],
     ['path', '🗺️', 'Path'],
-    ['tree', '🌳', 'Tree'],
-    ['projects', '🍎', 'Projects'],
+    ['tree', copy.navIcon, copy.navLabel],
+    ['projects', progressStyle() === 'dashboard' ? '🎖️' : '🍎', 'Projects'],
     ['career', '🧭', 'Career'],
     ['profile', '👤', 'Profile'],
   ];
@@ -105,7 +112,7 @@ function navBar(active) {
 
 function header() {
   const s = overallStats();
-  const lvl = xpLevel(s.xp);
+  const lvl = xpLevel(s.xp, progressStyle());
   return `<header class="topbar">
     <a class="brand" href="#/home"><span class="brand-mark">🌳</span> learn<span class="brand-dot">.</span>ai</a>
     <div class="topbar-stats">
@@ -121,12 +128,12 @@ function shell(active, content) {
 }
 
 // ---- onboarding ----
-const ob = { step: 0, name: '', persona: null, level: null };
+const ob = { step: 0, name: '', persona: null, level: null, style: null };
 
 function viewOnboarding() {
-  const steps = [obWelcome, obPersona, obLevel, obReady];
+  const steps = [obWelcome, obPersona, obLevel, obStyle, obReady];
   app.innerHTML = `<main class="main onboarding">
-    <div class="ob-progress">${[0, 1, 2, 3].map((i) => `<span class="${i <= ob.step ? 'on' : ''}"></span>`).join('')}</div>
+    <div class="ob-progress">${steps.map((_, i) => `<span class="${i <= ob.step ? 'on' : ''}"></span>`).join('')}</div>
     ${steps[ob.step]()}
   </main>`;
   wireOnboarding();
@@ -182,6 +189,26 @@ function obLevel() {
   </div>`;
 }
 
+function obStyle() {
+  return `<div class="ob-card">
+    <h1>How should we show your progress?</h1>
+    <p class="lede">Same learning, same tracking — pick the look that motivates you. You can switch anytime in your profile.</p>
+    <div class="choice-grid">
+      <button class="choice ${ob.style === 'tree' ? 'selected' : ''}" data-style="tree">
+        <span class="choice-emoji">🌳</span>
+        <span class="choice-label">Growth Tree</span>
+        <span class="choice-blurb">A banyan that grows from a seed as you learn — branches for skills, fruits for projects. Visual and rewarding.</span>
+      </button>
+      <button class="choice ${ob.style === 'dashboard' ? 'selected' : ''}" data-style="dashboard">
+        <span class="choice-emoji">📊</span>
+        <span class="choice-label">Skills Dashboard</span>
+        <span class="choice-blurb">A clean professional view — completion ring, certified-skill matrix, capstone badges. Boardroom-ready.</span>
+      </button>
+    </div>
+    <button class="btn btn-primary btn-big" id="ob-next" ${ob.style ? '' : 'disabled'}>Continue</button>
+  </div>`;
+}
+
 function obReady() {
   const track = trackById(ob.persona);
   return `<div class="ob-card">
@@ -199,7 +226,10 @@ function obReady() {
 
 function wireOnboarding() {
   const treeEl = $('.ob-tree');
-  if (treeEl) renderTree(treeEl, { stage: ob.step === 3 ? 1 : 0, branches: [], leafScore: 0, fruits: 0 }, { mini: true });
+  if (treeEl) {
+    if (ob.step === 4 && ob.style === 'dashboard') treeEl.innerHTML = `<div class="dash-mini">${completionRing(0, 130, 'ready')}</div>`;
+    else renderTree(treeEl, { stage: ob.step === 4 ? 1 : 0, branches: [], leafScore: 0, fruits: 0 }, { mini: true });
+  }
   const nameInput = $('#ob-name');
   if (nameInput) {
     nameInput.addEventListener('input', () => (ob.name = nameInput.value.trim()));
@@ -211,9 +241,13 @@ function wireOnboarding() {
   document.querySelectorAll('[data-level]').forEach((b) =>
     b.addEventListener('click', () => { ob.level = b.dataset.level; viewOnboarding(); })
   );
+  document.querySelectorAll('[data-style]').forEach((b) =>
+    b.addEventListener('click', () => { ob.style = b.dataset.style; viewOnboarding(); })
+  );
   $('#ob-next')?.addEventListener('click', () => { ob.step += 1; viewOnboarding(); });
   $('#ob-finish')?.addEventListener('click', () => {
     setProfile({ name: ob.name || 'Learner', persona: ob.persona, level: ob.level });
+    setProgressStyle(ob.style || 'tree');
     touchActivity();
     setCelebratedStage(-1); // so the "seed planted" celebration fires
     go('/home');
@@ -225,7 +259,9 @@ function wireOnboarding() {
 function viewHome() {
   const st = getState();
   const s = overallStats();
-  const lvl = xpLevel(s.xp);
+  const style = progressStyle();
+  const copy = styleCopy(style);
+  const lvl = xpLevel(s.xp, style);
   const next = nextStep();
   const stats = treeStats();
   const hour = new Date().getHours();
@@ -271,11 +307,11 @@ function viewHome() {
       <section class="hero-card card">
         <div class="hero-text">
           <h1>${hello}, ${esc(st.profile.name)} 🌿</h1>
-          <p class="stage-name">${esc(STAGE_NAMES[stats.stage])} — ${esc(STAGE_MESSAGES[stats.stage])}</p>
+          <p class="stage-name">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
           <div class="xp-bar"><div class="xp-fill" style="width:${Math.round(xpPct * 100)}%"></div></div>
           <div class="xp-meta">⭐ ${s.xp} XP · ${esc(lvl.name)}${lvl.next ? ` · ${lvl.next.at - s.xp} XP to ${esc(lvl.next.name)}` : ' · max level'}</div>
         </div>
-        <a class="hero-tree" href="#/tree" title="Visit your tree"><div id="mini-tree"></div></a>
+        <a class="hero-tree" href="#/tree" title="View your progress"><div id="mini-tree"></div></a>
       </section>
       ${continueCard}
       <section class="card stat-card">
@@ -285,7 +321,7 @@ function viewHome() {
           <div class="stat"><b>${s.streak}</b><span>day streak 🔥</span></div>
           <div class="stat"><b>${s.lessonsDone}/${s.lessonsTotal}</b><span>lessons</span></div>
           <div class="stat"><b>${s.modsComplete.length}/${s.modsTotal}</b><span>modules</span></div>
-          <div class="stat"><b>${s.projectsDone}</b><span>fruits 🍎</span></div>
+          <div class="stat"><b>${s.projectsDone}</b><span>${copy.projectWord}</span></div>
         </div>
       </section>
       <section class="card wisdom-card">
@@ -302,7 +338,8 @@ function viewHome() {
       </a>
     </div>
   `);
-  renderTree($('#mini-tree'), stats, { mini: true });
+  if (style === 'dashboard') renderDashboardMini($('#mini-tree'));
+  else renderTree($('#mini-tree'), stats, { mini: true });
 }
 
 const WISDOM = [
@@ -325,23 +362,25 @@ function viewPath() {
   const st = getState();
   const track = trackById(st.profile.persona);
   const s = overallStats();
+  const copy = styleCopy(progressStyle());
+  const dash = progressStyle() === 'dashboard';
   const { recommended } = projectsFor(st.profile.persona);
 
   shell('path', `
     <h1 class="page-title">Your learning path</h1>
-    <p class="page-sub">Foundation first — the roots every professional needs. Then your specialist branch, then the fruit.</p>
+    <p class="page-sub">${dash ? 'Foundation first — the core every professional needs. Then your specialist track, then the capstones.' : 'Foundation first — the roots every professional needs. Then your specialist branch, then the fruit.'}</p>
     <section class="path-section">
-      <div class="section-head"><h2>🌍 The Roots — Foundation</h2><span class="section-meta">${foundation.filter((m) => moduleProgress(m).complete).length}/6 complete</span></div>
+      <div class="section-head"><h2>${copy.pathFoundation}</h2><span class="section-meta">${foundation.filter((m) => moduleProgress(m).complete).length}/6 complete</span></div>
       ${foundation.map((m) => moduleCard(m)).join('')}
     </section>
     <section class="path-section">
-      <div class="section-head"><h2>${track.emoji} Your Branch — ${esc(track.label)}</h2><span class="section-meta">${track.modules.filter((m) => moduleProgress(m).complete).length}/${track.modules.length} complete</span></div>
-      ${!s.foundationComplete ? '<p class="hint">💡 Recommended after the foundation — but it\'s your tree. Learn in the order that serves you.</p>' : ''}
+      <div class="section-head"><h2>${track.emoji} ${copy.pathTrack} — ${esc(track.label)}</h2><span class="section-meta">${track.modules.filter((m) => moduleProgress(m).complete).length}/${track.modules.length} complete</span></div>
+      ${!s.foundationComplete ? `<p class="hint">💡 Recommended after the foundation — but it's your path. Learn in the order that serves you.</p>` : ''}
       ${track.modules.map((m) => moduleCard(m)).join('')}
     </section>
     <section class="path-section">
-      <div class="section-head"><h2>🍎 The Fruits — Projects</h2><span class="section-meta">${s.projectsDone} grown</span></div>
-      <p class="hint">Hands-on builds. Each completed project grows a golden fruit on your banyan. <a href="#/projects">Browse all →</a></p>
+      <div class="section-head"><h2>${copy.pathProjects}</h2><span class="section-meta">${s.projectsDone} ${dash ? 'delivered' : 'grown'}</span></div>
+      <p class="hint">${dash ? 'Hands-on deliverables that turn knowledge into portfolio proof.' : 'Hands-on builds. Each completed project grows a golden fruit on your banyan.'} <a href="#/projects">Browse all →</a></p>
       ${recommended.slice(0, 2).map((p) => projectCard(p)).join('')}
     </section>
   `);
@@ -412,7 +451,7 @@ function viewLesson(moduleId, lessonId) {
 
   $('#complete-lesson').addEventListener('click', () => {
     const wasNew = completeLesson(lessonId);
-    if (wasNew) toast('+10 XP — your tree felt that.', '🌱');
+    if (wasNew) toast(styleCopy(progressStyle()).lessonToast, progressStyle() === 'dashboard' ? '📈' : '🌱');
     if (nextLesson) go(`/lesson/${mod.id}/${nextLesson.id}`);
     else go(`/quiz/${mod.id}`);
     setTimeout(maybeCelebrate, 300);
@@ -478,16 +517,18 @@ function viewQuizResult(mod) {
   const firstPass = recordQuiz(mod.id, pct, passed);
   quizRun.moduleId = null;
 
+  const copy = styleCopy(progressStyle());
+  const dash = progressStyle() === 'dashboard';
   shell('path', `
     <div class="quiz-result card ${passed ? 'pass' : 'fail'}">
-      <div class="qr-emoji">${passed ? '🌿' : '🍂'}</div>
-      <h1>${passed ? 'Branch grown!' : 'Not yet — and that\'s fine.'}</h1>
+      <div class="qr-emoji">${passed ? (dash ? '🏅' : '🌿') : '🍂'}</div>
+      <h1>${passed ? copy.quizPassTitle : 'Not yet — and that\'s fine.'}</h1>
       <div class="qr-score">${quizRun.correct}/${total} · ${pct}%</div>
       <p>${passed
-        ? `You've mastered <b>${esc(mod.skill)}</b>. ${firstPass ? 'Your banyan just grew a new branch. +25 XP.' : 'Branch already on the tree — well reinforced.'}`
-        : `You need ${mod.quiz.passPct}% to grow this branch. Effortful retrieval is the point — review the lessons and return. The tree waits.`}</p>
+        ? `You've mastered <b>${esc(mod.skill)}</b>. ${firstPass ? copy.quizPassDetail : dash ? 'Skill already certified — well reinforced.' : 'Branch already on the tree — well reinforced.'}`
+        : `You need ${mod.quiz.passPct}% to ${dash ? 'certify this skill' : 'grow this branch'}. Effortful retrieval is the point — review the lessons and return.`}</p>
       <div class="qr-actions">
-        ${passed ? `<a class="btn btn-primary btn-big" href="#/tree">See your tree 🌳</a><a class="btn btn-ghost" href="#/path">Back to path</a>`
+        ${passed ? `<a class="btn btn-primary btn-big" href="#/tree">${copy.quizCta}</a><a class="btn btn-ghost" href="#/path">Back to path</a>`
         : `<a class="btn btn-primary btn-big" href="#/module/${mod.id}">Review lessons</a><button class="btn btn-ghost" id="retry">Retry check</button>`}
       </div>
     </div>
@@ -496,15 +537,26 @@ function viewQuizResult(mod) {
   if (passed) setTimeout(maybeCelebrate, 500);
 }
 
-// ---- tree page ----
+// ---- progress page (banyan tree or skills dashboard) ----
 function viewTree() {
   const stats = treeStats();
-  const s = overallStats();
-  const milestones = STAGE_NAMES.map((name, i) => `<div class="ms ${i <= stats.stage ? 'reached' : ''}"><span class="ms-dot">${i <= stats.stage ? '●' : '○'}</span> ${esc(name)}</div>`).join('');
+  const copy = styleCopy(progressStyle());
+
+  if (progressStyle() === 'dashboard') {
+    shell('tree', `
+      <h1 class="page-title">Your progress, ${esc(stats.name)}</h1>
+      <p class="page-sub">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
+      <div id="dash-full"></div>
+    `);
+    renderDashboardFull($('#dash-full'));
+    return;
+  }
+
+  const milestones = copy.stageNames.map((name, i) => `<div class="ms ${i <= stats.stage ? 'reached' : ''}"><span class="ms-dot">${i <= stats.stage ? '●' : '○'}</span> ${esc(name)}</div>`).join('');
 
   shell('tree', `
     <h1 class="page-title">The Banyan of ${esc(stats.name)}</h1>
-    <p class="page-sub">${esc(STAGE_NAMES[stats.stage])} — ${esc(STAGE_MESSAGES[stats.stage])}</p>
+    <p class="page-sub">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
     <div class="card tree-stage"><div id="big-tree"></div></div>
     <div class="tree-legend card">
       <h3>🌿 Branches — skills mastered (${stats.branches.length})</h3>
@@ -535,8 +587,8 @@ function viewProjects() {
   const st = getState();
   const { recommended, more } = projectsFor(st.profile.persona);
   shell('projects', `
-    <h1 class="page-title">Projects — the fruits 🍎</h1>
-    <p class="page-sub">"What I cannot create, I do not understand." Each project is a real artifact for your real job — and a golden fruit on your banyan.</p>
+    <h1 class="page-title">${styleCopy(progressStyle()).projectsTitle}</h1>
+    <p class="page-sub">"What I cannot create, I do not understand." Each project is a real artifact for your real job${progressStyle() === 'dashboard' ? ' — and a capstone badge on your dashboard.' : ' — and a golden fruit on your banyan.'}</p>
     <section class="path-section"><div class="section-head"><h2>Recommended for you</h2></div>${recommended.map(projectCard).join('')}</section>
     ${more.length ? `<section class="path-section"><div class="section-head"><h2>More to explore</h2></div>${more.map(projectCard).join('')}</section>` : ''}
   `);
@@ -579,7 +631,7 @@ function viewProject(projectId) {
       const ps2 = projectState(p.id);
       $('#check-status').innerHTML = `${ps2.checks.filter(Boolean).length}/${p.selfCheck.length} complete${ps2.done ? ' · 🍎 grown!' : ''}`;
       if (firstDone) {
-        toast('+50 XP — a golden fruit grows on your banyan!', '🍎');
+        toast(styleCopy(progressStyle()).projectToast, progressStyle() === 'dashboard' ? '🎖️' : '🍎');
         setTimeout(maybeCelebrate, 400);
       }
     });
@@ -590,7 +642,7 @@ function viewProject(projectId) {
 function viewProfile() {
   const st = getState();
   const s = overallStats();
-  const lvl = xpLevel(s.xp);
+  const lvl = xpLevel(s.xp, progressStyle());
   const persona = personas.find((p) => p.id === st.profile.persona);
   const level = levels.find((l) => l.id === st.profile.level);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -608,9 +660,17 @@ function viewProfile() {
     </div>
     <div class="card">
       <h3>Switch persona track</h3>
-      <p class="hint">Your foundation progress carries over. The branch you grow next changes.</p>
+      <p class="hint">Your foundation progress carries over. Only your specialist content changes.</p>
       <div class="chips select-chips">
         ${personas.map((p) => `<button class="chip ${p.id === st.profile.persona ? 'selected' : ''}" data-set-persona="${p.id}">${p.emoji} ${esc(p.label)}</button>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h3>Progress style</h3>
+      <p class="hint">Same tracking underneath — choose how it looks.</p>
+      <div class="chips select-chips">
+        <button class="chip ${progressStyle() === 'tree' ? 'selected' : ''}" data-set-style="tree">🌳 Growth Tree</button>
+        <button class="chip ${progressStyle() === 'dashboard' ? 'selected' : ''}" data-set-style="dashboard">📊 Skills Dashboard</button>
       </div>
     </div>
     ${!isStandalone ? `<div class="card">
@@ -640,7 +700,14 @@ function viewProfile() {
   document.querySelectorAll('[data-set-persona]').forEach((b) =>
     b.addEventListener('click', () => {
       setProfile({ ...getState().profile, persona: b.dataset.setPersona });
-      toast('Track switched — your branch grows a new direction.', '🌿');
+      toast('Track switched — your specialist path is updated.', '🌿');
+      viewProfile();
+    })
+  );
+  document.querySelectorAll('[data-set-style]').forEach((b) =>
+    b.addEventListener('click', () => {
+      setProgressStyle(b.dataset.setStyle);
+      toast(b.dataset.setStyle === 'dashboard' ? 'Switched to the Skills Dashboard.' : 'Switched to the Growth Tree.', b.dataset.setStyle === 'dashboard' ? '📊' : '🌳');
       viewProfile();
     })
   );
