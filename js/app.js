@@ -3,6 +3,7 @@ import { foundation, tracks, personas, levels, trackById, pathFor, moduleById, l
 import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey } from './storage.js';
 import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, STAGE_NAMES, STAGE_MESSAGES } from './progress.js';
 import { renderTree } from './tree.js';
+import { viewCareer } from './career.js';
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = $('#app');
@@ -94,6 +95,7 @@ function navBar(active) {
     ['path', '🗺️', 'Path'],
     ['tree', '🌳', 'Tree'],
     ['projects', '🍎', 'Projects'],
+    ['career', '🧭', 'Career'],
     ['profile', '👤', 'Profile'],
   ];
   return `<nav class="nav">
@@ -291,6 +293,13 @@ function viewHome() {
         <p>"${esc(dailyWisdom().text)}"</p>
         <div class="wisdom-by">— ${esc(dailyWisdom().by)}</div>
       </section>
+      <a class="card career-teaser" href="#/career">
+        <div class="cc-label">Career consult</div>
+        ${st.career?.result
+          ? `<h3>🧭 Your top AI-era role: ${esc(st.career.result.roles[0].title)}</h3><p>Fit ${st.career.result.roles[0].fitScore}/100 — review your map and 90-day plan.</p>`
+          : `<h3>🧭 Where do you fit in the AI era?</h3><p>5 questions → 3 realistic pivot roles with fit scores, gaps and a 90-day plan.</p>`}
+        <span class="cc-go">Open Career →</span>
+      </a>
     </div>
   `);
   renderTree($('#mini-tree'), stats, { mini: true });
@@ -672,6 +681,9 @@ function viewProfile() {
   });
 }
 
+// Context handed to the career view (keeps career.js free of circular imports).
+const careerCtx = { shell, esc, toast, go, rerender: () => route() };
+
 // ---- router ----
 function route() {
   const hash = location.hash.replace(/^#/, '') || '/';
@@ -687,6 +699,7 @@ function route() {
     case 'tree': return viewTree();
     case 'projects': return viewProjects();
     case 'project': return viewProject(a);
+    case 'career': return viewCareer(careerCtx);
     case 'profile': return viewProfile();
     default: return viewHome();
   }
