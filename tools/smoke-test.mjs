@@ -25,7 +25,9 @@ function check(cond, msg) {
 console.log('\n— Data integrity —');
 check(data.foundation.length === 6, 'foundation has 6 modules');
 check(data.tracks.length === 5, '5 persona tracks');
-check(data.projects.length === 6, '6 projects');
+check(data.projects.length === 8, '8 projects (2 starter + 3 intermediate + 3 advanced)');
+check(data.projects.filter((p) => p.tier === 'starter').length === 2, 'two starter projects');
+
 
 const ids = new Set();
 let lessonsTotal = 0;
@@ -50,6 +52,9 @@ for (const mod of [...data.foundation, ...data.tracks.flatMap((t) => t.modules)]
 console.log(`  (total lessons: ${lessonsTotal})`);
 for (const p of data.projects) {
   check(p.steps.length >= 4 && p.selfCheck.length >= 4, `${p.id} has steps and self-checks`);
+  check(['starter', 'intermediate', 'advanced'].includes(p.tier), `${p.id} has a valid tier (${p.tier})`);
+  check(p.xp === { starter: 25, intermediate: 50, advanced: 75 }[p.tier], `${p.id} XP matches tier`);
+  check(Boolean(p.needs), `${p.id} states what you need`);
   check(p.personas.every((x) => data.tracks.some((t) => t.id === x)), `${p.id} persona tags valid`);
 }
 for (const persona of data.personas) {
@@ -90,9 +95,17 @@ for (const mod of po.modules) {
 check(progress.treeStats().stage === 6, 'stage 6 when track done');
 check(progress.treeStats().branches.length === 8, '8 branches grown');
 
-// projects → fruits
+// projects → fruits, with status lifecycle and tiered XP
 const p1 = data.projectById('p1');
-p1.selfCheck.forEach((_, i) => storage.setProjectCheck('p1', i, true, p1.selfCheck.length));
+check(progress.projectStatus('p1') === 'todo', 'project starts as todo');
+storage.setProjectStep('p1', 0, true);
+check(progress.projectStatus('p1') === 'doing', 'ticking a step → in progress');
+storage.setProjectNotes('p1', 'left off at step 2');
+check(progress.projectState('p1').notes === 'left off at step 2', 'notes persist');
+const xpBeforeP1 = storage.getState().xp;
+p1.selfCheck.forEach((_, i) => storage.setProjectCheck('p1', i, true, p1.selfCheck.length, p1.xp));
+check(storage.getState().xp === xpBeforeP1 + p1.xp, `tiered XP awarded (+${p1.xp})`);
+check(progress.projectStatus('p1') === 'done', 'all self-checks → done');
 check(progress.treeStats().fruits === 1, 'one fruit after project');
 const p2 = data.projectById('p3');
 p2.selfCheck.forEach((_, i) => storage.setProjectCheck('p3', i, true, p2.selfCheck.length));

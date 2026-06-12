@@ -1,7 +1,7 @@
 // learn.ai — main application: hash router, views, quiz engine, celebrations.
 import { foundation, tracks, personas, levels, personaById, trackForPersona, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
-import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle, recordReview, reviewDoneToday } from './storage.js';
-import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, styleCopy, reviewPool, sampleReview, nextMilestone } from './progress.js';
+import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setProjectStep, setProjectNotes, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle, recordReview, reviewDoneToday } from './storage.js';
+import { lessonDone, quizState, moduleProgress, projectState, projectStatus, nextStep, overallStats, xpLevel, treeStats, styleCopy, reviewPool, sampleReview, nextMilestone } from './progress.js';
 import { renderTree } from './tree.js';
 import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
@@ -632,68 +632,166 @@ function viewTree() {
 }
 
 // ---- projects ----
-function projectCard(p) {
+const TIERS = {
+  starter: { label: '🌱 Starter', sub: 'Under an hour, browser only — anyone can do these today.' },
+  intermediate: { label: '🌿 Intermediate', sub: 'A few hours across a week, woven into your real work.' },
+  advanced: { label: '🌳 Advanced', sub: 'The portfolio pieces — more effort, more proof.' },
+};
+
+function statusChip(projectId) {
+  const status = projectStatus(projectId);
+  const dash = progressStyle() === 'dashboard';
+  if (status === 'done') return `<span class="status-chip done">${dash ? '🎖️ Done' : '🍎 Done'}</span>`;
+  if (status === 'doing') return '<span class="status-chip doing">● In progress</span>';
+  return '<span class="status-chip todo">○ Not started</span>';
+}
+
+function projectCard(p, recommendedIds) {
   const ps = projectState(p.id);
-  const checked = ps.checks?.filter(Boolean).length || 0;
+  const stepsDone = (ps.steps || []).filter(Boolean).length;
   return `<a class="card project-card ${ps.done ? 'complete' : ''}" href="#/project/${p.id}">
     <div class="module-emoji">${p.emoji}</div>
     <div class="module-info">
-      <h3>${esc(p.title)} ${ps.done ? '<span class="check">🍎</span>' : ''}</h3>
+      <h3>${esc(p.title)} ${recommendedIds?.has(p.id) ? '<span class="rec-chip">for you</span>' : ''}</h3>
       <p>${esc(p.blurb)}</p>
-      <div class="meta">${esc(p.hours)} · ${checked}/${p.selfCheck.length} checks</div>
+      <div class="meta">${esc(p.hours)} · +${p.xp} XP${stepsDone ? ` · step ${Math.min(stepsDone + 1, p.steps.length)}/${p.steps.length}` : ''}</div>
     </div>
+    ${statusChip(p.id)}
   </a>`;
 }
 
 function viewProjects() {
   const st = getState();
-  const { recommended, more } = projectsFor(st.profile.persona);
+  const { recommended } = projectsFor(st.profile.persona);
+  const recIds = new Set(recommended.map((p) => p.id));
+  const allProjects = projectsFor(st.profile.persona);
+  const everything = [...allProjects.recommended, ...allProjects.more];
+
+  const tierSection = (tier) => {
+    const items = everything.filter((p) => p.tier === tier);
+    if (!items.length) return '';
+    const doneCount = items.filter((p) => projectStatus(p.id) === 'done').length;
+    return `<section class="path-section">
+      <div class="section-head"><h2>${TIERS[tier].label}</h2><span class="section-meta">${doneCount}/${items.length} done</span></div>
+      <p class="hint">${TIERS[tier].sub}</p>
+      ${items.map((p) => projectCard(p, recIds)).join('')}
+    </section>`;
+  };
+
   shell('projects', `
     <h1 class="page-title">${styleCopy(progressStyle()).projectsTitle}</h1>
-    <p class="page-sub">"What I cannot create, I do not understand." Each project is a real artifact for your real job${progressStyle() === 'dashboard' ? ' — and a capstone badge on your dashboard.' : ' — and a golden fruit on your banyan.'}</p>
-    <section class="path-section"><div class="section-head"><h2>Recommended for you</h2></div>${recommended.map(projectCard).join('')}</section>
-    ${more.length ? `<section class="path-section"><div class="section-head"><h2>More to explore</h2></div>${more.map(projectCard).join('')}</section>` : ''}
+    <p class="page-sub">"What I cannot create, I do not understand." Real artifacts for your real job — from a 30-minute starter to portfolio pieces. Download a brief, work at your own pace, come back and tick off your progress.</p>
+    ${tierSection('starter')}${tierSection('intermediate')}${tierSection('advanced')}
   `);
+}
+
+// Downloadable project brief (markdown — opens in any text editor).
+function downloadBrief(p) {
+  const lines = [
+    `# ${p.title} — learn.ai project brief`,
+    '',
+    `**Level:** ${p.tier} · **Time:** ${p.hours} · **Reward:** +${p.xp} XP`,
+    '',
+    `## Why this project`,
+    p.why,
+    '',
+    `## What you need`,
+    p.needs,
+    '',
+    `## Steps`,
+    ...p.steps.map((s, i) => `${i + 1}. [ ] ${s}`),
+    '',
+    `## Deliverable`,
+    p.deliverable,
+    '',
+    `## Self-check (tick these in the app when you're done)`,
+    ...p.selfCheck.map((c) => `- [ ] ${c}`),
+    '',
+    '---',
+    'When you finish, come back to learn.ai → Projects → tick your steps and self-checks to claim the XP.',
+    'https://vigneshbhaskarraj.github.io/learn.ai/  ·  © 2026 learn.ai · crafted by Vignesh Bhaskarraj',
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `learnai-project-${p.id}-${p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 function viewProject(projectId) {
   const p = projectById(projectId);
   if (!p) return go('/projects');
   const ps = projectState(p.id);
+  const dash = progressStyle() === 'dashboard';
 
   shell('projects', `
     <a class="back" href="#/projects">← Projects</a>
     <article class="lesson">
       <div class="lesson-head">
-        <div class="meta">Project · ${esc(p.hours)} ${ps.done ? '· <span class="done-tag">🍎 Fruit grown</span>' : ''}</div>
+        <div class="meta">${TIERS[p.tier].label} · ${esc(p.hours)} · +${p.xp} XP &nbsp;${statusChip(p.id)}</div>
         <h1>${p.emoji} ${esc(p.title)}</h1>
         <p class="page-sub">${esc(p.blurb)}</p>
       </div>
+      <div class="btn-row brief-row">
+        <button class="btn btn-ghost" id="download-brief">⬇️ Download brief</button>
+      </div>
       <div class="lesson-content">
         <div class="callout"><strong>Why this project:</strong> ${esc(p.why)}</div>
-        <h3>Steps</h3>
-        <ol>${p.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+        <div class="needs-card">🧰 <b>What you need:</b> ${esc(p.needs)}</div>
+        <h3>Steps — tick them off as you go</h3>
+      </div>
+      <div class="step-list">
+        ${p.steps.map((s, i) => `<label class="check-row step-row">
+          <input type="checkbox" data-step="${i}" ${ps.steps?.[i] ? 'checked' : ''}/>
+          <span><b class="step-n">${i + 1}.</b> ${esc(s)}</span>
+        </label>`).join('')}
+      </div>
+      <div class="lesson-content">
         <h3>Deliverable</h3>
         <p>${esc(p.deliverable)}</p>
       </div>
+      <div class="card notes-card">
+        <h3>📝 My notes</h3>
+        <p class="hint">Where you left off, links to your work, ideas — saved on this device.</p>
+        <textarea id="project-notes" rows="3" maxlength="2000" placeholder="e.g. Drafted 3 of 5 prompts — the client-email one needs another pass…">${esc(ps.notes || '')}</textarea>
+        <span class="notes-saved meta" id="notes-saved"></span>
+      </div>
       <div class="self-check card">
-        <h3>Self-check — tick honestly; the tree knows 😉</h3>
+        <h3>Self-check — tick honestly${dash ? '' : '; the tree knows 😉'}</h3>
         ${p.selfCheck.map((c, i) => `<label class="check-row">
           <input type="checkbox" data-check="${i}" ${ps.checks?.[i] ? 'checked' : ''}/>
           <span>${esc(c)}</span>
         </label>`).join('')}
-        <div class="meta" id="check-status">${(ps.checks?.filter(Boolean).length || 0)}/${p.selfCheck.length} complete${ps.done ? ' · 🍎 grown!' : ''}</div>
+        <div class="meta" id="check-status">${(ps.checks?.filter(Boolean).length || 0)}/${p.selfCheck.length} complete${ps.done ? (dash ? ' · 🎖️ delivered!' : ' · 🍎 grown!') : ''}</div>
       </div>
     </article>
   `);
 
+  document.getElementById('download-brief').addEventListener('click', () => {
+    downloadBrief(p);
+    toast('Brief downloaded — work anywhere, come back to tick it off.', '⬇️');
+  });
+  document.querySelectorAll('[data-step]').forEach((cb) =>
+    cb.addEventListener('change', () => setProjectStep(p.id, Number(cb.dataset.step), cb.checked))
+  );
+  let notesTimer = null;
+  document.getElementById('project-notes').addEventListener('input', (e) => {
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(() => {
+      setProjectNotes(p.id, e.target.value);
+      const saved = $('#notes-saved');
+      saved.textContent = 'saved ✓';
+      setTimeout(() => (saved.textContent = ''), 1500);
+    }, 500);
+  });
   document.querySelectorAll('[data-check]').forEach((cb) => {
     cb.addEventListener('change', () => {
-      const firstDone = setProjectCheck(p.id, Number(cb.dataset.check), cb.checked, p.selfCheck.length);
+      const firstDone = setProjectCheck(p.id, Number(cb.dataset.check), cb.checked, p.selfCheck.length, p.xp);
       const ps2 = projectState(p.id);
-      $('#check-status').innerHTML = `${ps2.checks.filter(Boolean).length}/${p.selfCheck.length} complete${ps2.done ? ' · 🍎 grown!' : ''}`;
+      $('#check-status').innerHTML = `${ps2.checks.filter(Boolean).length}/${p.selfCheck.length} complete${ps2.done ? (dash ? ' · 🎖️ delivered!' : ' · 🍎 grown!') : ''}`;
       if (firstDone) {
-        toast(styleCopy(progressStyle()).projectToast, progressStyle() === 'dashboard' ? '🎖️' : '🍎');
+        toast(`+${p.xp} XP — ${dash ? 'capstone badge earned!' : 'a golden fruit grows on your banyan!'}`, dash ? '🎖️' : '🍎');
         setTimeout(maybeCelebrate, 400);
       }
     });

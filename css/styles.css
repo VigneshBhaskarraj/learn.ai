@@ -354,6 +354,27 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .check-row input { width: 20px; height: 20px; accent-color: var(--accent); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
 .self-check .meta { margin-top: 12px; }
 
+/* ---------- project tiers, status & notes ---------- */
+.status-chip { font-size: 0.68rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; white-space: nowrap; align-self: center; flex-shrink: 0; }
+.status-chip.todo { color: var(--muted); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--card-border); }
+.status-chip.doing { color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(244, 180, 64, 0.35); }
+.status-chip.done { color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(47, 184, 127, 0.4); }
+.rec-chip { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gold); background: var(--gold-soft); padding: 2px 8px; border-radius: 8px; vertical-align: middle; }
+.needs-card { background: rgba(255, 255, 255, 0.05); border: 1px dashed var(--card-border); border-radius: 14px; padding: 12px 15px; font-size: 0.9rem; margin: 1em 0; }
+.brief-row { margin: 4px 0 6px; }
+.step-list { display: grid; gap: 2px; margin: 6px 0 10px; }
+.step-row { border-bottom: none; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 11px 14px; }
+.step-row:has(input:checked) { border-color: rgba(47, 184, 127, 0.4); }
+.step-row:has(input:checked) span { color: var(--muted); }
+.step-n { color: var(--accent); margin-right: 2px; }
+.notes-card textarea {
+  width: 100%; resize: vertical; min-height: 70px; margin-top: 8px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--card-border); border-radius: 12px;
+  color: var(--text); font-family: inherit; font-size: 0.92rem; line-height: 1.5; padding: 11px 13px; outline: none;
+}
+.notes-card textarea:focus { border-color: var(--accent); }
+.notes-saved { color: var(--accent); margin-left: 4px; }
+
 /* ---------- profile ---------- */
 .profile-card { display: flex; gap: 16px; align-items: center; }
 .avatar {

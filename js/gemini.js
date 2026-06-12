@@ -107,7 +107,7 @@ export function validateCareerResult(r) {
 
 function normalize(r) {
   const validTracks = new Set(['po', 'dev', 'ba', 'qa', 'lead']);
-  const validProjects = new Set(['p1', 'p2', 'p3', 'p4', 'p5', 'p6']);
+  const validProjects = new Set(['s1', 's2', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6']);
   r.roles = r.roles.slice(0, 3).map((role) => ({
     ...role,
     fitScore: Math.max(0, Math.min(100, Math.round(role.fitScore))),
