@@ -1,5 +1,5 @@
 // Derived progress: module/path completion, XP level, and the banyan tree's growth stats.
-import { foundation, trackById, pathFor, projects } from './data/index.js';
+import { foundation, trackForPersona, pathFor, projects } from './data/index.js';
 import { getState, todayKey } from './storage.js';
 
 export function lessonDone(lessonId) {
@@ -34,7 +34,8 @@ export function nextStep() {
     if (!quizState(mod.id).passed) return { type: 'quiz', module: mod };
   }
   for (const p of projects) {
-    if (st.profile.persona && p.personas.includes(st.profile.persona) && !projectState(p.id).done) {
+    const myTrack = trackForPersona(st.profile.persona);
+    if (myTrack && p.personas.includes(myTrack.id) && !projectState(p.id).done) {
       return { type: 'project', project: p };
     }
   }
@@ -48,7 +49,7 @@ export function overallStats() {
   const st = getState();
   const persona = st.profile?.persona;
   const path = persona ? pathFor(persona) : foundation;
-  const track = persona ? trackById(persona) : null;
+  const track = persona ? trackForPersona(persona) : null;
 
   const modsComplete = path.filter((m) => moduleProgress(m).complete);
   const foundationComplete = foundation.every((m) => moduleProgress(m).complete);

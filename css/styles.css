@@ -442,6 +442,82 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .role-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .role-links .btn { font-size: 0.86rem; padding: 10px 14px; }
 
+/* ---------- production polish ---------- */
+::selection { background: rgba(47, 184, 127, 0.35); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.app-footer {
+  text-align: center; color: var(--muted); font-size: 0.72rem; opacity: 0.75;
+  padding: 30px 10px 6px; letter-spacing: 0.02em;
+}
+.app-footer b { color: var(--text); }
+
+/* ---------- persona grid (10 roles, compact) ---------- */
+.persona-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+.persona-grid .choice { grid-template-columns: 32px 1fr; padding: 11px 12px; border-radius: 14px; }
+.persona-grid .choice-emoji { font-size: 1.25rem; }
+.persona-grid .choice-label { font-size: 0.84rem; line-height: 1.25; }
+.persona-grid .choice-blurb { display: none; }
+@media (min-width: 560px) { .persona-grid .choice-blurb { display: block; font-size: 0.74rem; } }
+
+/* ---------- module & lesson flow ---------- */
+.lens-card {
+  background: var(--accent-soft); border: 1px solid rgba(47, 184, 127, 0.3);
+  border-radius: 14px; padding: 12px 15px; font-size: 0.9rem; margin-bottom: 14px;
+}
+.module-resume { margin-bottom: 16px; }
+.lesson-strip { display: flex; gap: 5px; margin-bottom: 12px; }
+.lesson-strip span { flex: 1; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.1); }
+.lesson-strip span.done { background: var(--accent); }
+.lesson-strip span.now { background: var(--gold); }
+.quick-take {
+  background: linear-gradient(135deg, rgba(47, 184, 127, 0.13), rgba(244, 180, 64, 0.07));
+  border: 1px solid rgba(47, 184, 127, 0.35); border-radius: 16px;
+  padding: 15px 18px; margin: 18px 0 6px;
+}
+.qt-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; }
+.qt-time { font-size: 0.74rem; font-weight: 650; color: var(--muted); }
+.quick-take ul { margin: 0; padding-left: 1.2em; }
+.quick-take li { margin: 0.45em 0; font-size: 0.93rem; }
+.qt-note { margin: 10px 0 0; font-size: 0.78rem; color: var(--muted); }
+.lesson-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.lesson-nav .btn { font-size: 0.8rem; padding: 9px 13px; max-width: 48%; text-align: center; }
+
+/* ---------- AI Readiness Profile (report) ---------- */
+.report-toolbar { margin-bottom: 16px; }
+.report-cta { display: block; text-align: center; margin-bottom: 14px; }
+.report {
+  background: #fdfdf9; color: #1c2722; border-radius: 18px; padding: 30px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.report-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px solid #1d8a5c; padding-bottom: 10px; }
+.report-brand { font-weight: 800; font-size: 1.05rem; color: #14352a; }
+.report-title { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #1d8a5c; }
+.report-person h2 { margin: 18px 0 2px; font-size: 1.5rem; color: #14352a; }
+.report-meta { color: #5a6e64; font-size: 0.85rem; }
+.report-statement { font-size: 1rem; margin: 14px 0 18px; }
+.report-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 8px; }
+.rstat { text-align: center; background: #eef4ef; border-radius: 12px; padding: 10px 6px; }
+.rstat b { display: block; font-size: 1.25rem; color: #14352a; }
+.rstat span { font-size: 0.68rem; color: #5a6e64; }
+.report h3 { color: #1d8a5c; font-size: 0.92rem; text-transform: uppercase; letter-spacing: 0.06em; margin: 22px 0 8px; }
+.report-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.report-table th { text-align: left; color: #5a6e64; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid #d7e2da; }
+.report-table td { padding: 7px 8px; border-bottom: 1px solid #e8efe9; }
+.report-list { margin: 0; padding-left: 1.2em; font-size: 0.9rem; }
+.report-list li { margin: 0.4em 0; }
+.report-empty, .report-note { color: #5a6e64; font-size: 0.85rem; }
+.report-foot { margin-top: 26px; border-top: 1px solid #d7e2da; padding-top: 12px; }
+.report-foot p { font-size: 0.72rem; color: #7a8b81; margin: 0 0 6px; }
+.report-sign { font-weight: 650; }
+
+@media print {
+  body { background: #fff !important; }
+  .topbar, .nav, .no-print, .app-footer, .back { display: none !important; }
+  .main { padding: 0 !important; max-width: none !important; animation: none; }
+  .report { border: none; border-radius: 0; padding: 10mm 6mm; }
+}
+
 /* ---------- toast & celebration ---------- */
 .toast {
   position: fixed; left: 50%; bottom: calc(var(--nav-h) + 22px + env(safe-area-inset-bottom)); z-index: 60;
