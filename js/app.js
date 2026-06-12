@@ -1,7 +1,7 @@
 // learn.ai — main application: hash router, views, quiz engine, celebrations.
 import { foundation, tracks, personas, levels, personaById, trackForPersona, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
-import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle } from './storage.js';
-import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, styleCopy } from './progress.js';
+import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle, recordReview, reviewDoneToday } from './storage.js';
+import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, styleCopy, reviewPool, sampleReview, nextMilestone } from './progress.js';
 import { renderTree } from './tree.js';
 import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
@@ -51,7 +51,10 @@ function showCelebration(stats) {
       <div class="celebrate-tree"></div>
       <h2>${esc(copy.stageNames[stats.stage])}</h2>
       <p>${esc(copy.stageMessages[stats.stage])}</p>
-      <button class="btn btn-primary" data-close>${progressStyle() === 'dashboard' ? 'Keep going' : 'Keep growing'}</button>
+      <div class="celebrate-actions">
+        <button class="btn btn-primary" data-close>${progressStyle() === 'dashboard' ? 'Keep going' : 'Keep growing'}</button>
+        ${stats.stage > 0 ? `<button class="btn btn-ghost" data-share>Share 📤</button>` : ''}
+      </div>
     </div>`;
   document.body.appendChild(overlay);
   if (progressStyle() === 'dashboard') {
@@ -61,11 +64,28 @@ function showCelebration(stats) {
   }
   requestAnimationFrame(() => overlay.classList.add('show'));
   overlay.addEventListener('click', (e) => {
+    if (e.target.closest('[data-share]')) {
+      shareProgress(copy.stageNames[stats.stage]);
+      return;
+    }
     if (e.target === overlay || e.target.closest('[data-close]')) {
       overlay.classList.remove('show');
       setTimeout(() => overlay.remove(), 300);
     }
   });
+}
+
+async function shareProgress(milestone) {
+  const text = `I just reached "${milestone}" on learn.ai — a free, curated path into AI for professionals. 🌳`;
+  const url = 'https://vigneshbhaskarraj.github.io/learn.ai/';
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'learn.ai', text, url });
+    } else {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      toast('Copied to clipboard — paste it anywhere.', '📤');
+    }
+  } catch { /* user cancelled the share sheet */ }
 }
 
 // ---- shared UI bits ----
@@ -117,7 +137,7 @@ function header() {
   return `<header class="topbar">
     <a class="brand" href="#/home"><span class="brand-mark">🌳</span> learn<span class="brand-dot">.</span>ai</a>
     <div class="topbar-stats">
-      <span class="pill" title="Daily learning streak">🔥 ${s.streak}</span>
+      <span class="pill" title="Daily learning streak${getState().streak.shields ? ` · ${getState().streak.shields} streak shield(s) — a shield saves your streak if you miss a day` : ''}">🔥 ${s.streak}${getState().streak.shields ? ` <span class="shield">🛡️${getState().streak.shields}</span>` : ''}</span>
       <span class="pill" title="Experience points">⭐ ${s.xp} · ${esc(lvl.name)}</span>
     </div>
   </header>`;
@@ -307,6 +327,23 @@ function viewHome() {
 
   const xpPct = lvl.next ? (s.xp - lvl.floor) / (lvl.next.at - lvl.floor) : 1;
 
+  // Today card: daily goal (lesson + review) — specific goals + retrieval practice
+  const lessonToday = Object.values(st.lessons).some((ts) => String(ts).startsWith(todayKey()));
+  const reviewToday = reviewDoneToday();
+  const canReview = reviewPool().length > 0;
+  const ms = nextMilestone(style);
+  const todayCard = `<section class="card today-card">
+    <h3>🎯 Today</h3>
+    <div class="goal-row ${lessonToday ? 'done' : ''}"><span class="goal-check">${lessonToday ? '✓' : '○'}</span><span class="goal-label">Learn one lesson</span>${lessonToday ? '<span class="goal-done-tag">done</span>' : `<a class="goal-go" href="${next?.type === 'lesson' ? `#/lesson/${next.module.id}/${next.lesson.id}` : '#/path'}">Go →</a>`}</div>
+    <div class="goal-row ${reviewToday ? 'done' : ''}">
+      <span class="goal-check">${reviewToday ? '✓' : '○'}</span>
+      <span class="goal-label">Daily review <span class="goal-sub">3 quick questions — proven to lock in memory</span></span>
+      ${reviewToday ? '<span class="goal-done-tag">done</span>' : canReview ? '<a class="goal-go" href="#/review">Start →</a>' : '<span class="goal-sub">unlocks after your first knowledge check</span>'}
+    </div>
+    ${lessonToday && (reviewToday || !canReview) ? '<div class="goal-complete">Goal complete — see you tomorrow 🌅</div>' : ''}
+    ${ms ? `<div class="milestone-line"><div class="milestone-bar"><div class="milestone-fill" style="width:${Math.round(ms.pct * 100)}%"></div></div><span class="milestone-text">Next: <b>${esc(ms.target)}</b> · ${esc(ms.detail)}</span></div>` : ''}
+  </section>`;
+
   shell('home', `
     <div class="home-grid">
       <section class="hero-card card">
@@ -319,6 +356,7 @@ function viewHome() {
         <a class="hero-tree" href="#/tree" title="View your progress"><div id="mini-tree"></div></a>
       </section>
       ${continueCard}
+      ${todayCard}
       <section class="card stat-card">
         <h3>This week</h3>
         <div class="week">${days.join('')}</div>
@@ -778,6 +816,78 @@ function viewProfile() {
   });
 }
 
+// ---- daily review (spaced retrieval practice) ----
+const reviewRun = { items: null, idx: 0, correct: 0, answered: false };
+
+function viewReview() {
+  if (reviewDoneToday()) {
+    const today = getState().review[todayKey()];
+    return shell('home', `
+      <div class="quiz-result card pass">
+        <div class="qr-emoji">🧠</div>
+        <h1>Review done for today</h1>
+        <div class="qr-score">${today.correct}/${today.asked}</div>
+        <p>Spacing reviews across days is exactly what makes knowledge stick — that's the science, not a limitation. Come back tomorrow.</p>
+        <div class="qr-actions"><a class="btn btn-primary btn-big" href="#/home">Back home</a></div>
+      </div>`);
+  }
+  if (!reviewPool().length) return go('/home');
+  if (!reviewRun.items) Object.assign(reviewRun, { items: sampleReview(3), idx: 0, correct: 0, answered: false });
+
+  if (reviewRun.idx >= reviewRun.items.length) {
+    const wasNew = recordReview(reviewRun.items.length, reviewRun.correct);
+    const correct = reviewRun.correct;
+    const total = reviewRun.items.length;
+    reviewRun.items = null;
+    if (wasNew && correct) toast(`+${correct * 5} XP — retrieval locked in.`, '🧠');
+    return shell('home', `
+      <div class="quiz-result card pass">
+        <div class="qr-emoji">${correct === total ? '🌟' : '🧠'}</div>
+        <h1>${correct === total ? 'Perfect recall!' : 'Review complete'}</h1>
+        <div class="qr-score">${correct}/${total}</div>
+        <p>${correct === total ? 'Every retrieval strengthens the memory trace. Same time tomorrow.' : 'Missed ones matter most — retrieving after forgetting is where the deepest learning happens. They\'ll be back.'}</p>
+        <div class="qr-actions"><a class="btn btn-primary btn-big" href="#/home">Back home</a></div>
+      </div>`);
+  }
+
+  const { module: mod, q } = reviewRun.items[reviewRun.idx];
+  shell('home', `
+    <a class="back" href="#/home" id="review-back">← Home</a>
+    <div class="quiz">
+      <div class="quiz-progress">${reviewRun.items.map((_, i) => `<span class="${i < reviewRun.idx ? 'past' : i === reviewRun.idx ? 'now' : ''}"></span>`).join('')}</div>
+      <div class="meta">🧠 Daily review · from ${mod.emoji} ${esc(mod.title)} · ${reviewRun.idx + 1} of ${reviewRun.items.length}</div>
+      <h2 class="quiz-q">${esc(q.q)}</h2>
+      <div class="quiz-options">${q.options.map((o, i) => `<button class="quiz-opt" data-opt="${i}"><span class="opt-letter">${'ABCD'[i]}</span> ${esc(o)}</button>`).join('')}</div>
+      <div class="quiz-explain" id="quiz-explain" hidden></div>
+      <button class="btn btn-primary btn-big" id="review-next" hidden>${reviewRun.idx + 1 === reviewRun.items.length ? 'Finish' : 'Next →'}</button>
+    </div>`);
+
+  document.querySelectorAll('.quiz-opt').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      if (reviewRun.answered) return;
+      reviewRun.answered = true;
+      const picked = Number(btn.dataset.opt);
+      const right = picked === q.answer;
+      if (right) reviewRun.correct += 1;
+      document.querySelectorAll('.quiz-opt').forEach((b, i) => {
+        b.disabled = true;
+        if (i === q.answer) b.classList.add('correct');
+        else if (i === picked) b.classList.add('wrong');
+      });
+      const ex = $('#quiz-explain');
+      ex.hidden = false;
+      ex.innerHTML = `<b>${right ? '✓ Still got it.' : '✗ Worth the refresh.'}</b> ${esc(q.explain)}`;
+      $('#review-next').hidden = false;
+    })
+  );
+  $('#review-next').addEventListener('click', () => {
+    reviewRun.idx += 1;
+    reviewRun.answered = false;
+    viewReview();
+  });
+  $('#review-back').addEventListener('click', () => { reviewRun.items = null; });
+}
+
 // Context handed to the career view (keeps career.js free of circular imports).
 const careerCtx = { shell, esc, toast, go, rerender: () => route() };
 
@@ -798,6 +908,7 @@ function route() {
     case 'project': return viewProject(a);
     case 'career': return viewCareer(careerCtx);
     case 'report': return viewReport(careerCtx);
+    case 'review': return viewReview();
     case 'profile': return viewProfile();
     default: return viewHome();
   }
