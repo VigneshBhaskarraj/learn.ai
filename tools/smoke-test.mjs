@@ -163,6 +163,24 @@ check(progress.xpLevel(600, 'dashboard').name === 'Specialist', 'dashboard level
   check(!/gemini[-_ ]?2|GEMINI_MODEL/i.test(careerSrc.replace(/from '\.\/gemini\.js'/, '')), 'career UI does not name the model');
 }
 
+console.log('\n— Personas & readiness report —');
+check(data.personas.length === 10, `10 personas defined (${data.personas.length})`);
+for (const p of data.personas) {
+  check(Boolean(p.lens && p.blurb && p.emoji), `${p.id} persona complete`);
+  const track = data.trackForPersona(p.id);
+  check(Boolean(track), `${p.id} maps to track ${track?.id}`);
+  check(data.pathFor(p.id).length === 8, `${p.id} path = 8 modules`);
+  const rec = data.projectsFor(p.id);
+  check(rec.recommended.length >= 1, `${p.id} has recommended projects`);
+}
+{
+  const report = await import('../js/report.js');
+  const html = report.buildReportHtml();
+  check(html.includes('AI Readiness Profile'), 'report renders title');
+  check(html.includes('Certified skills') && html.includes('Capstone projects'), 'report has skills + capstones sections');
+  check(html.includes('crafted by Vignesh Bhaskarraj'), 'report carries the signature');
+}
+
 console.log('\n— Tree renderer —');
 for (let stage = 0; stage <= 7; stage++) {
   const fake = { innerHTML: '' };

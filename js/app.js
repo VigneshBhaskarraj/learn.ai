@@ -1,10 +1,11 @@
 // learn.ai — main application: hash router, views, quiz engine, celebrations.
-import { foundation, tracks, personas, levels, trackById, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
+import { foundation, tracks, personas, levels, personaById, trackForPersona, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
 import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle } from './storage.js';
 import { lessonDone, quizState, moduleProgress, projectState, nextStep, overallStats, xpLevel, treeStats, styleCopy } from './progress.js';
 import { renderTree } from './tree.js';
 import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
+import { viewReport } from './report.js';
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = $('#app');
@@ -122,8 +123,12 @@ function header() {
   </header>`;
 }
 
+function footer() {
+  return `<footer class="app-footer">🌳 <b>learn.ai</b> · grow into the AI era · © 2026 · crafted with care by Vignesh Bhaskarraj</footer>`;
+}
+
 function shell(active, content) {
-  app.innerHTML = `${header()}<main class="main">${content}</main>${navBar(active)}`;
+  app.innerHTML = `${header()}<main class="main">${content}${footer()}</main>${navBar(active)}`;
   window.scrollTo(0, 0);
 }
 
@@ -162,8 +167,8 @@ function obWelcome() {
 function obPersona() {
   return `<div class="ob-card">
     <h1>What kind of work do you do${ob.name ? ', ' + esc(ob.name) : ''}?</h1>
-    <p class="lede">Everyone shares the same foundation. Your role shapes the <strong>specialist branch</strong> your tree grows next — content curated for your day-to-day reality.</p>
-    <div class="choice-grid">
+    <p class="lede">Everyone shares the same foundation. Your role curates the rest — the specialist content, the reading lens, the projects, the career guidance.</p>
+    <div class="choice-grid persona-grid">
       ${personas.map((p) => `<button class="choice ${ob.persona === p.id ? 'selected' : ''}" data-persona="${p.id}">
         <span class="choice-emoji">${p.emoji}</span>
         <span class="choice-label">${esc(p.label)}</span>
@@ -210,7 +215,7 @@ function obStyle() {
 }
 
 function obReady() {
-  const track = trackById(ob.persona);
+  const track = trackForPersona(ob.persona);
   return `<div class="ob-card">
     <div class="ob-hero small"><div class="ob-tree"></div></div>
     <h1>Your path is ready${ob.name ? ', ' + esc(ob.name) : ''}.</h1>
@@ -360,7 +365,7 @@ function dailyWisdom() {
 // ---- path ----
 function viewPath() {
   const st = getState();
-  const track = trackById(st.profile.persona);
+  const track = trackForPersona(st.profile.persona);
   const s = overallStats();
   const copy = styleCopy(progressStyle());
   const dash = progressStyle() === 'dashboard';
@@ -392,6 +397,11 @@ function viewModule(moduleId) {
   if (!mod) return go('/path');
   const p = moduleProgress(mod);
   const q = quizState(mod.id);
+  const dash = progressStyle() === 'dashboard';
+  const persona = personaById(getState().profile.persona);
+  const firstOpen = mod.lessons.find((l) => !lessonDone(l.id));
+  const resumeHref = firstOpen ? `#/lesson/${mod.id}/${firstOpen.id}` : !q.passed ? `#/quiz/${mod.id}` : null;
+  const resumeLabel = !p.lessonsDone ? '▶ Start module' : firstOpen ? '▶ Continue where you left off' : !q.passed ? '🧠 Take the knowledge check' : null;
 
   shell('path', `
     <a class="back" href="#/path">← Path</a>
@@ -400,9 +410,11 @@ function viewModule(moduleId) {
       <div>
         <h1>${esc(mod.title)}</h1>
         <p class="page-sub">${esc(mod.tagline)}</p>
-        <div class="meta">Skill branch: <b>${esc(mod.skill)}</b> · ~${mod.minutes} min ${p.complete ? '· <span class="done-tag">✓ Branch grown</span>' : ''}</div>
+        <div class="meta">Skill: <b>${esc(mod.skill)}</b> · ~${mod.minutes} min ${p.complete ? `· <span class="done-tag">${dash ? '✓ Certified' : '✓ Branch grown'}</span>` : ''}</div>
       </div>
     </div>
+    ${mod.kind === 'foundation' && persona?.lens ? `<div class="lens-card">${persona.emoji} <b>Your lens:</b> ${esc(persona.lens)}</div>` : ''}
+    ${resumeHref ? `<a class="btn btn-primary btn-big module-resume" href="${resumeHref}">${resumeLabel}</a>` : ''}
     <div class="lesson-list">
       ${mod.lessons.map((l, i) => {
         const done = lessonDone(l.id);
@@ -430,21 +442,31 @@ function viewLesson(moduleId, lessonId) {
   const done = lessonDone(lessonId);
   const nextLesson = mod.lessons[idx + 1];
 
+  const prevLesson = mod.lessons[idx - 1];
   shell('path', `
     <a class="back" href="#/module/${mod.id}">← ${esc(mod.title)}</a>
     <article class="lesson">
       <div class="lesson-head">
-        <div class="meta">${mod.emoji} ${esc(mod.title)} · Lesson ${idx + 1} of ${mod.lessons.length} · ~${lesson.minutes} min</div>
+        <div class="lesson-strip">${mod.lessons.map((l, i) => `<span class="${lessonDone(l.id) ? 'done' : ''} ${i === idx ? 'now' : ''}"></span>`).join('')}</div>
+        <div class="meta">${mod.emoji} ${esc(mod.title)} · Lesson ${idx + 1} of ${mod.lessons.length}</div>
         <h1>${esc(lesson.title)}</h1>
+      </div>
+      <div class="quick-take">
+        <div class="qt-head"><span>⚡ Quick take</span><span class="qt-time">full read ~${lesson.minutes} min</span></div>
+        <ul>${lesson.takeaways.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+        <p class="qt-note">The 30-second version. The full lesson below builds the understanding that makes the knowledge check — and your job — easier.</p>
       </div>
       <div class="lesson-content">${lesson.content}</div>
       ${lesson.quote ? `<blockquote class="quote"><p>“${esc(lesson.quote.text)}”</p><footer>— <b>${esc(lesson.quote.by)}</b>${lesson.quote.role ? `, <span>${esc(lesson.quote.role)}</span>` : ''}</footer></blockquote>` : ''}
-      <div class="takeaways"><h3>🌿 Key takeaways</h3><ul>${lesson.takeaways.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
       ${lesson.goDeeper ? `<div class="go-deeper"><h3>⛏️ Go deeper (optional)</h3><ul>${lesson.goDeeper.map((g) => `<li><a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.label)} ↗</a></li>`).join('')}</ul></div>` : ''}
       <div class="lesson-actions">
         <button class="btn btn-primary btn-big" id="complete-lesson">
           ${done ? '✓ Completed' : 'Mark complete'}${!done && nextLesson ? ' & continue →' : !done ? ' →' : ''}
         </button>
+        <div class="lesson-nav">
+          ${prevLesson ? `<a class="btn btn-ghost" href="#/lesson/${mod.id}/${prevLesson.id}">← ${esc(prevLesson.title)}</a>` : '<span></span>'}
+          ${nextLesson ? `<a class="btn btn-ghost" href="#/lesson/${mod.id}/${nextLesson.id}">${esc(nextLesson.title)} →</a>` : `<a class="btn btn-ghost" href="#/quiz/${mod.id}">Knowledge check →</a>`}
+        </div>
       </div>
     </article>
   `);
@@ -546,6 +568,7 @@ function viewTree() {
     shell('tree', `
       <h1 class="page-title">Your progress, ${esc(stats.name)}</h1>
       <p class="page-sub">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
+      <a class="btn btn-primary report-cta" href="#/report">📄 Generate my AI Readiness Profile</a>
       <div id="dash-full"></div>
     `);
     renderDashboardFull($('#dash-full'));
@@ -558,6 +581,7 @@ function viewTree() {
     <h1 class="page-title">The Banyan of ${esc(stats.name)}</h1>
     <p class="page-sub">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
     <div class="card tree-stage"><div id="big-tree"></div></div>
+    <a class="btn btn-ghost report-cta" href="#/report">📄 Generate my AI Readiness Profile</a>
     <div class="tree-legend card">
       <h3>🌿 Branches — skills mastered (${stats.branches.length})</h3>
       ${stats.branches.length ? `<div class="chips">${stats.branches.map((b) => `<span class="chip">${esc(b.skill)}</span>`).join('')}</div>` : '<p class="hint">Complete a module (lessons + knowledge check) to grow your first branch.</p>'}
@@ -658,6 +682,12 @@ function viewProfile() {
         <p class="meta">⭐ ${s.xp} XP · ${esc(lvl.name)} · 🔥 ${s.streak}-day streak</p>
       </div>
     </div>
+    <a class="card career-teaser" href="#/report">
+      <div class="cc-label">Your proof</div>
+      <h3>📄 AI Readiness Profile</h3>
+      <p>Your certified skills, capstones and career direction on one page — show a manager or save as PDF.</p>
+      <span class="cc-go">Generate →</span>
+    </a>
     <div class="card">
       <h3>Switch persona track</h3>
       <p class="hint">Your foundation progress carries over. Only your specialist content changes.</p>
@@ -767,6 +797,7 @@ function route() {
     case 'projects': return viewProjects();
     case 'project': return viewProject(a);
     case 'career': return viewCareer(careerCtx);
+    case 'report': return viewReport(careerCtx);
     case 'profile': return viewProfile();
     default: return viewHome();
   }

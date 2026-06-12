@@ -24,11 +24,22 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 | Layer | Content |
 |---|---|
 | 🌍 **The Roots** (everyone) | 6 foundation modules · 24 lessons: AI demystified · How machines learn · Neural networks & deep learning · The LLM revolution · Working with AI daily · Agents & the modern stack |
-| 🌿 **The Branches** (your persona) | 5 tracks × 2 modules × 3 lessons: Product Owner/PM · Developer/Engineer · Business Analyst/Consultant · QA/Test Engineer · Delivery/Engagement Leader |
+| 🌿 **The Branches** (your persona) | 10 personas (PO/PM, Developer, BA/Consultant, QA, Delivery Leader, Architect, Data Analyst, Designer/UX, Operations, Sales) mapped onto 5 specialist tracks — each persona gets its own reading lens, projects and career guidance |
 | 🍎 **The Fruits** | 6 hands-on projects with briefs, steps and self-checks: Prompt Portfolio · AI Workflow Audit · AI Feature One-Pager · Tiny RAG Assistant · Mini Eval · Client-Ready AI Briefing |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
 | 📈 **Tracking** | XP & levels, daily streaks, weekly activity, resume-where-you-left-off, milestone celebrations |
 | 🎨 **Two progress styles** | Pick at onboarding, switch anytime in Profile: the playful **Growth Tree** (banyan, branches, fruits) or the professional **Skills Dashboard** (completion ring, certified-skill matrix, capstone badges) — same tracking engine underneath |
+| 📄 **AI Readiness Profile** | A print-ready, evidence-based one-pager: certified skills with check scores, delivered capstones, career direction and current focus — show a manager, attach to a review, save as PDF |
+
+## Positioning — why this exists when Coursera does
+
+Incumbent platforms (Coursera, DataCamp, LinkedIn Learning, Udacity) sell **course libraries**: thousands of hours, generic audiences, completion certificates. Meanwhile 59% of enterprises report an AI skills gap *while already paying for training* — because libraries don't answer the two questions professionals actually have: *"what should **I** learn for **my** role?"* and *"how do I prove I'm ready?"*
+
+learn.ai's moat is a closed loop none of them offer:
+
+**Career Consult** (where do I fit?) → **persona-curated path** (exactly what to learn, with your role's reading lens) → **certified skills + delivered capstones** (effortful checks, real artifacts) → **AI Readiness Profile** (verifiable proof, on one page).
+
+Free, installable, offline, no account — and every layer reinforces the next.
 | 🧭 **Career Consult** | A 5-minute questionnaire → **3 realistic AI-era pivot roles** with fit scores, transferable skills, honest gaps, a 90-day plan and readiness signals — powered by one Gemini API call (bring your own free key) or an offline rule-based estimator |
 
 54 lessons, 38 quiz questions, 6 projects — every lesson with key takeaways, a leader's quote, and optional "go deeper" links (Karpathy's Zero to Hero, One Useful Thing, The Batch…).
