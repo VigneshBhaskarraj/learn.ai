@@ -19,7 +19,15 @@ export function moduleProgress(mod) {
 }
 
 export function projectState(projectId) {
-  return getState().projects[projectId] || { checks: [], done: false };
+  return getState().projects[projectId] || { checks: [], steps: [], notes: '', done: false };
+}
+
+// Lifecycle status: 'todo' | 'doing' | 'done'
+export function projectStatus(projectId) {
+  const p = projectState(projectId);
+  if (p.done) return 'done';
+  if ((p.steps || []).some(Boolean) || (p.checks || []).some(Boolean) || (p.notes || '').trim()) return 'doing';
+  return 'todo';
 }
 
 // The next incomplete step in the user's path: a lesson, a quiz, or a project.

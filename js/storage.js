@@ -131,19 +131,36 @@ export function recordQuiz(moduleId, scorePct, passed) {
   return firstPass;
 }
 
-export function setProjectCheck(projectId, idx, value, totalChecks) {
-  const p = state.projects[projectId] || { checks: [], done: false, ts: null };
+export function setProjectCheck(projectId, idx, value, totalChecks, xpAward = 50) {
+  const p = state.projects[projectId] || { checks: [], steps: [], notes: '', done: false, ts: null };
   p.checks[idx] = value;
   const allDone = p.checks.filter(Boolean).length >= totalChecks;
   const firstDone = allDone && !p.done;
   p.done = allDone;
   if (firstDone) {
     p.ts = new Date().toISOString();
-    state.xp += 50;
+    state.xp += xpAward;
   }
   state.projects[projectId] = p;
   touchActivity();
   return firstDone;
+}
+
+// Tick off a project step (progress through the work itself, no XP).
+export function setProjectStep(projectId, idx, value) {
+  const p = state.projects[projectId] || { checks: [], steps: [], notes: '', done: false, ts: null };
+  p.steps = p.steps || [];
+  p.steps[idx] = value;
+  state.projects[projectId] = p;
+  touchActivity();
+}
+
+// Personal notes on a project ("where I left off") — saved locally.
+export function setProjectNotes(projectId, text) {
+  const p = state.projects[projectId] || { checks: [], steps: [], notes: '', done: false, ts: null };
+  p.notes = String(text).slice(0, 2000);
+  state.projects[projectId] = p;
+  persist();
 }
 
 export function setCelebratedStage(stage) {

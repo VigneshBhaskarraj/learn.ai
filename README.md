@@ -25,13 +25,14 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 |---|---|
 | 🌍 **The Roots** (everyone) | 6 foundation modules · 24 lessons: AI demystified · How machines learn · Neural networks & deep learning · The LLM revolution · Working with AI daily · Agents & the modern stack |
 | 🌿 **The Branches** (your persona) | 10 personas (PO/PM, Developer, BA/Consultant, QA, Delivery Leader, Architect, Data Analyst, Designer/UX, Operations, Sales) mapped onto 5 specialist tracks — each persona gets its own reading lens, projects and career guidance |
-| 🍎 **The Fruits** | 6 hands-on projects with briefs, steps and self-checks: Prompt Portfolio · AI Workflow Audit · AI Feature One-Pager · Tiny RAG Assistant · Mini Eval · Client-Ready AI Briefing |
+| 🍎 **The Fruits** | 8 hands-on projects in three tiers — 🌱 Starter (30–45 min, browser only), 🌿 Intermediate, 🌳 Advanced — each with what-you-need, tick-off steps, personal notes, downloadable brief (.md), status tracking (not started / in progress / done) and tiered XP |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
 | 📈 **Tracking** | XP & levels, daily streaks with **streak shields** (a shield earned per 7-day streak absorbs one missed day — forgiveness mechanics that cut churn), weekly activity, resume-where-you-left-off, milestone celebrations with share |
 | 🧠 **Daily Review** | 3-question spaced retrieval from your passed modules — the most evidence-backed technique in learning science (the testing effect, Roediger & Karpicke). Part of the daily goal alongside one lesson |
 | 🎯 **Goal gradient** | The Today card shows exactly what stands between you and the next milestone ("2 more modules to Sapling") — concrete proximity is what gets goals finished |
 | 🎨 **Two progress styles** | Pick at onboarding, switch anytime in Profile: the playful **Growth Tree** (banyan, branches, fruits) or the professional **Skills Dashboard** (completion ring, certified-skill matrix, capstone badges) — same tracking engine underneath |
 | 📄 **AI Readiness Profile** | A print-ready, evidence-based one-pager: certified skills with check scores, delivered capstones, career direction and current focus — show a manager, attach to a review, save as PDF |
+| 🧭 **Career Consult** | A 5-minute questionnaire → **3 realistic AI-era pivot roles** with fit scores, transferable skills, honest gaps, a 90-day plan and readiness signals — via the platform's secure AI service, your own key, or an offline estimator |
 
 ## Positioning — why this exists when Coursera does
 
@@ -42,9 +43,8 @@ learn.ai's moat is a closed loop none of them offer:
 **Career Consult** (where do I fit?) → **persona-curated path** (exactly what to learn, with your role's reading lens) → **certified skills + delivered capstones** (effortful checks, real artifacts) → **AI Readiness Profile** (verifiable proof, on one page).
 
 Free, installable, offline, no account — and every layer reinforces the next.
-| 🧭 **Career Consult** | A 5-minute questionnaire → **3 realistic AI-era pivot roles** with fit scores, transferable skills, honest gaps, a 90-day plan and readiness signals — powered by one Gemini API call (bring your own free key) or an offline rule-based estimator |
 
-54 lessons, 38 quiz questions, 6 projects — every lesson with key takeaways, a leader's quote, and optional "go deeper" links (Karpathy's Zero to Hero, One Useful Thing, The Batch…).
+54 lessons, 38 quiz questions, 8 tiered projects — every lesson with a Quick Take, key takeaways, a leader's quote, and optional "go deeper" links (Karpathy's Zero to Hero, One Useful Thing, The Batch…).
 
 ## Hosting on GitHub Pages
 
