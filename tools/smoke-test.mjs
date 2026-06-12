@@ -181,6 +181,40 @@ for (const p of data.personas) {
   check(html.includes('crafted by Vignesh Bhaskarraj'), 'report carries the signature');
 }
 
+console.log('\n— Engagement engine: streak shields & daily review —');
+{
+  // isolated streak simulation with controlled dates
+  const dump = storage.exportState();
+  storage.resetAll();
+  storage.setProfile({ name: 'T', persona: 'dev', level: 'new' });
+  const day = (n) => new Date(2026, 5, n, 12); // June n, 2026
+  for (let d = 1; d <= 7; d++) storage.touchActivity(day(d));
+  check(storage.getState().streak.count === 7, '7-day streak counted');
+  check(storage.getState().streak.shields === 1, 'shield earned at 7 days');
+  storage.touchActivity(day(9)); // miss June 8 → shield absorbs it
+  check(storage.getState().streak.count === 8 && storage.getState().streak.shields === 0, 'shield absorbs a single missed day');
+  storage.touchActivity(day(12)); // miss 2 days, no shield → reset
+  check(storage.getState().streak.count === 1, 'streak resets after multi-day gap without shield');
+
+  // daily review
+  storage.recordQuiz('f1', 90, true);
+  ['f1-l1','f1-l2','f1-l3','f1-l4'].forEach((l) => storage.completeLesson(l));
+  check(progress.reviewPool().length === 5, 'review pool = passed module questions (5)');
+  const sample = progress.sampleReview(3);
+  check(sample.length === 3 && new Set(sample.map((s2) => s2.q.q)).size === 3, 'review samples 3 distinct questions');
+  const xpBefore = storage.getState().xp;
+  check(storage.recordReview(3, 2, day(12)) === true, 'review records');
+  check(storage.getState().xp === xpBefore + 10, 'review XP = correct × 5');
+  check(storage.recordReview(3, 3, day(12)) === false, 'second review same day rejected');
+  check(storage.reviewDoneToday(day(12)), 'reviewDoneToday true');
+
+  // goal gradient
+  const ms = progress.nextMilestone('tree');
+  check(Boolean(ms && ms.target && ms.detail), `milestone computed: "${ms.target}" — ${ms.detail}`);
+  storage.resetAll();
+  storage.importState(dump);
+}
+
 console.log('\n— Tree renderer —');
 for (let stage = 0; stage <= 7; stage++) {
   const fake = { innerHTML: '' };

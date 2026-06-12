@@ -74,6 +74,73 @@ export function overallStats() {
   };
 }
 
+// ---- Daily review (spaced retrieval practice — the testing effect) ----
+// Pool: quiz questions from every module the learner has already passed.
+export function reviewPool() {
+  const st = getState();
+  if (!st.profile) return [];
+  const pool = [];
+  for (const mod of pathFor(st.profile.persona)) {
+    if (quizState(mod.id).passed) {
+      for (const q of mod.quiz.questions) pool.push({ module: mod, q });
+    }
+  }
+  return pool;
+}
+
+export function sampleReview(n = 3) {
+  const pool = reviewPool();
+  const picked = [];
+  const used = new Set();
+  while (picked.length < Math.min(n, pool.length)) {
+    const i = Math.floor(Math.random() * pool.length);
+    if (!used.has(i)) {
+      used.add(i);
+      picked.push(pool[i]);
+    }
+  }
+  return picked;
+}
+
+// ---- Goal gradient: what exactly stands between you and the next milestone ----
+export function nextMilestone(style = 'tree') {
+  const s = overallStats();
+  const stats = treeStats();
+  const copy = styleCopy(style);
+  if (stats.stage >= 7) return null;
+  const target = copy.stageNames[stats.stage + 1];
+  let detail = '';
+  const nearest = () => {
+    // module closest to completion that isn't complete
+    let best = null;
+    for (const m of s.path) {
+      const p = moduleProgress(m);
+      if (p.complete) continue;
+      const remaining = (p.lessonsTotal - p.lessonsDone) + (p.quizPassed ? 0 : 1);
+      if (!best || remaining < best.remaining) best = { m, remaining, p };
+    }
+    return best;
+  };
+  switch (stats.stage) {
+    case 0: detail = 'Complete your first lesson'; break;
+    case 1: {
+      const b = nearest();
+      detail = b ? `${b.remaining} step${b.remaining > 1 ? 's' : ''} left in ${b.m.title}` : '';
+      break;
+    }
+    case 2: detail = `${3 - s.modsComplete.length} more module${3 - s.modsComplete.length > 1 ? 's' : ''} to complete`; break;
+    case 3: {
+      const left = foundation.filter((m) => !moduleProgress(m).complete).length;
+      detail = `${left} foundation module${left > 1 ? 's' : ''} to go`;
+      break;
+    }
+    case 4: detail = 'Complete your first specialist module'; break;
+    case 5: detail = 'Finish your specialist track'; break;
+    case 6: detail = `${2 - s.projectsDone} more capstone${2 - s.projectsDone > 1 ? 's' : ''} to deliver`; break;
+  }
+  return { target, detail, pct: stats.stage / 7 };
+}
+
 // XP levels — small ladder for a sense of motion. [xp floor, tree name, dashboard name]
 const LEVELS = [
   [0, 'Seed', 'Starter'],

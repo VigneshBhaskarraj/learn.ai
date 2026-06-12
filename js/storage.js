@@ -12,7 +12,8 @@ const defaultState = () => ({
   quizzes: {}, // moduleId -> { best, passed, attempts, last }
   projects: {}, // projectId -> { checks: [bool], done, ts }
   activity: {}, // 'YYYY-MM-DD' -> event count
-  streak: { count: 0, lastDay: null },
+  streak: { count: 0, lastDay: null, shields: 0 },
+  review: {}, // 'YYYY-MM-DD' -> { asked, correct } — daily spaced-retrieval sessions
   xp: 0,
   celebratedStage: 0,
   settings: { reducedMotion: false, geminiKey: '', progressStyle: 'tree' },
@@ -64,16 +65,44 @@ export function todayKey(d = new Date()) {
 }
 
 // Record that the user did something today: bumps activity + streak.
-export function touchActivity() {
-  const today = todayKey();
+// Streak shields (forgiveness mechanics): one shield is earned per 7
+// consecutive days (held max 2); a single missed day consumes a shield
+// instead of resetting the streak — loss-aversion without the anxiety.
+export function touchActivity(now = new Date()) {
+  const today = todayKey(now);
   state.activity[today] = (state.activity[today] || 0) + 1;
   const s = state.streak;
+  if (s.shields === undefined) s.shields = 0;
   if (s.lastDay !== today) {
-    const yesterday = todayKey(new Date(Date.now() - 86400000));
-    s.count = s.lastDay === yesterday ? s.count + 1 : 1;
+    const gapDays = s.lastDay
+      ? Math.round((new Date(today) - new Date(s.lastDay)) / 86400000)
+      : Infinity;
+    if (gapDays === 1) {
+      s.count += 1;
+    } else if (gapDays === 2 && s.shields > 0) {
+      s.shields -= 1; // shield absorbs the single missed day
+      s.count += 1;
+    } else {
+      s.count = 1;
+    }
+    if (s.count > 0 && s.count % 7 === 0) s.shields = Math.min(2, s.shields + 1);
     s.lastDay = today;
   }
   persist();
+}
+
+// Daily review (spaced retrieval): record today's session, +5 XP per correct.
+export function recordReview(asked, correct, now = new Date()) {
+  const today = todayKey(now);
+  if (state.review[today]) return false;
+  state.review[today] = { asked, correct };
+  state.xp += correct * 5;
+  touchActivity(now);
+  return true;
+}
+
+export function reviewDoneToday(now = new Date()) {
+  return Boolean(state.review[todayKey(now)]);
 }
 
 export function setProfile(profile) {

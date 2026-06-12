@@ -27,7 +27,9 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 | 🌿 **The Branches** (your persona) | 10 personas (PO/PM, Developer, BA/Consultant, QA, Delivery Leader, Architect, Data Analyst, Designer/UX, Operations, Sales) mapped onto 5 specialist tracks — each persona gets its own reading lens, projects and career guidance |
 | 🍎 **The Fruits** | 6 hands-on projects with briefs, steps and self-checks: Prompt Portfolio · AI Workflow Audit · AI Feature One-Pager · Tiny RAG Assistant · Mini Eval · Client-Ready AI Briefing |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
-| 📈 **Tracking** | XP & levels, daily streaks, weekly activity, resume-where-you-left-off, milestone celebrations |
+| 📈 **Tracking** | XP & levels, daily streaks with **streak shields** (a shield earned per 7-day streak absorbs one missed day — forgiveness mechanics that cut churn), weekly activity, resume-where-you-left-off, milestone celebrations with share |
+| 🧠 **Daily Review** | 3-question spaced retrieval from your passed modules — the most evidence-backed technique in learning science (the testing effect, Roediger & Karpicke). Part of the daily goal alongside one lesson |
+| 🎯 **Goal gradient** | The Today card shows exactly what stands between you and the next milestone ("2 more modules to Sapling") — concrete proximity is what gets goals finished |
 | 🎨 **Two progress styles** | Pick at onboarding, switch anytime in Profile: the playful **Growth Tree** (banyan, branches, fruits) or the professional **Skills Dashboard** (completion ring, certified-skill matrix, capstone badges) — same tracking engine underneath |
 | 📄 **AI Readiness Profile** | A print-ready, evidence-based one-pager: certified skills with check scores, delivered capstones, career direction and current focus — show a manager, attach to a review, save as PDF |
 
