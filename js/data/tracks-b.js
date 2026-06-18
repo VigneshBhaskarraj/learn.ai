@@ -27,6 +27,16 @@ export const tracksB = [
 <h3>The mining method</h3>
 <p><strong>Step 1 — Inventory the tasks, not the jobs.</strong> AI doesn't adopt at the job level; it adopts at the task level. Decompose the process (or role) into tasks: a claims handler reads submissions, requests missing documents, checks policy coverage, drafts decisions, handles appeals. Now you have units of analysis.</p>
 <p><strong>Step 2 — Screen each task with the four sweet spots.</strong> Is the task essentially <em>drafting</em> (first versions of text), <em>extraction</em> (structure from messy sources), <em>synthesis</em> (digesting volume into insight), or <em>conversation</em> (answering questions from a knowledge base)? Tasks matching one of the four are candidates; tasks built on judgment, relationships or physical action are not — they're the human remainder, and naming them explicitly builds trust with worried teams.</p>
+<table class="viz-table">
+  <thead><tr><th>Sweet spot</th><th>What the task is</th></tr></thead>
+  <tbody>
+    <tr><td>Drafting</td><td>First versions of text</td></tr>
+    <tr><td>Extraction</td><td>Structure from messy sources</td></tr>
+    <tr><td>Synthesis</td><td>Digesting volume into insight</td></tr>
+    <tr><td>Conversation</td><td>Answering from a knowledge base</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">Tasks matching one of the four are AI candidates; the rest are the human remainder.</div>
 <p><strong>Step 3 — Score candidates on the value/feasibility grid.</strong> Value: frequency × time per occurrence × error cost. Feasibility (you know these from foundation!): is the needed context available digitally? Is there tolerance for managed error with human review? Is the volume enough to matter? Plot the grid; the top-right quadrant is your pilot shortlist.</p>
 <div class="callout"><strong>The interview question that finds gold:</strong> ask process performers "What part of your week feels like being a human photocopier?" — repetitive transformation of information from one form to another. That phrase unlocks candor, and human-photocopier work maps almost perfectly to the four sweet spots. Three interviews typically yield more honest candidates than three workshops.</div>
 <h3>What good output looks like</h3>
@@ -55,6 +65,15 @@ export const tracksB = [
 <li><strong>Human lane:</strong> judgment calls, approvals, relationship moments, exception handling — plus the <strong>review checkpoints</strong> where humans verify AI output before it matters. Place these deliberately: after every step is suffocating; after no step is reckless. Risk-weight them: light skim for internal drafts, hard gate before anything external or financial.</li>
 <li><strong>System lane:</strong> where the context comes from and where outputs land (the integration reality your developers will price).</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Lane</th><th>What lives here</th></tr></thead>
+  <tbody>
+    <tr><td>AI</td><td>Drafting, extraction, synthesis, conversation — each with its context and output contract</td></tr>
+    <tr><td>Human</td><td>Judgment, approvals, exceptions, plus risk-weighted review checkpoints</td></tr>
+    <tr><td>System</td><td>Where context comes from and where outputs land</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">The three-swimlane future-state map.</div>
 <h3>The redesign questions that create the gains</h3>
 <p>Don't just insert AI into existing steps — re-ask the process: <em>Which steps existed only because human reading was expensive?</em> (Batch triage queues often dissolve — AI reads everything instantly.) <em>Which handoffs existed to balance workload?</em> (May collapse into one AI-assisted role.) <em>What becomes possible that wasn't?</em> (Responding to every RFP; reviewing every contract, not a sample; personalizing every communication.) The third question is where transformation hides — the first two only find efficiency.</p>
 <div class="callout"><strong>Design the failure path with the same care as the happy path:</strong> What does the human see when AI confidence is low? Where does an AI error get caught, and by whom, and how is it fed back? (To the eval set — tell the dev team.) What is the manual fallback when the AI is down? A future-state design without a failure path is a demo drawn in BPMN.</div>
@@ -79,6 +98,11 @@ export const tracksB = [
 <p>AI business cases fail in two opposite ways: hype cases (assume perfection, ignore review costs, collapse at first hallucination anecdote) and timid cases (bury the upside in caveats, lose to inertia). The credible middle is a discipline. Here is its anatomy.</p>
 <h3>The honest value model</h3>
 <p><strong>Value = (time saved per task × frequency × loaded rate) − (review time × frequency × rate) − run costs.</strong> The middle term is what separates pros from vendors: AI output gets reviewed (that's the design!), so net savings is <em>draft time saved minus review time added</em>. Typical honest numbers for drafting tasks: 50–70% net time reduction, not the 95% of vendor decks. Run costs: tokens (your PO colleagues learned the napkin math — cents per task), platform fees, and the integration build amortized.</p>
+<div class="viz viz-stats">
+  <div class="vstat"><b>50–70%</b><span>honest net time saved on drafting</span></div>
+  <div class="vstat"><b>95%</b><span>the vendor-deck claim</span></div>
+  <div class="vstat"><b>cents</b><span>token cost per task</span></div>
+</div>
 <p>Add the harder-to-quantify lines <em>as separate listed benefits, not padded into the number</em>: quality lift from reviewing-everything-instead-of-sampling, speed-to-respond wins, capacity for the previously-impossible. Listing them unpriced signals honesty; pricing them speculatively signals a vendor deck.</p>
 <h3>The risk column — write it yourself, first</h3>
 <p>Every AI business case needs its risk register on the same page: error rates and their worst-case cost (with the mitigation: review gates, eval thresholds before go-live); adoption risk (the tool nobody uses saves nothing — name the change effort); data risk (what client data goes where — one slide on this preempts the security veto); model dependency (provider changes, cost shifts). <strong>Writing the risk column yourself, before the skeptics do, is the single biggest credibility move available to you.</strong></p>
@@ -171,6 +195,16 @@ export const tracksB = [
 <li><strong>Applications</strong> (copilots for support, sales, coding, legal…): rent models underneath, differentiate via workflow + integrations + domain tuning. Evaluate as you would any SaaS, plus the AI-specific questions below.</li>
 <li><strong>Services</strong> (your layer!): the redesign, integration, change and governance work that turns the other three layers into outcomes.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Layer</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>Model providers</td><td>Build the brains — a handful matter</td></tr>
+    <tr><td>Cloud and platform</td><td>Picks-and-shovels where enterprises access models</td></tr>
+    <tr><td>Applications</td><td>Copilots that rent models, differentiate on workflow</td></tr>
+    <tr><td>Services</td><td>Redesign, integration, change, governance — your layer</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">The chaos is at the surface, not the structure.</div>
 <h3>Decode the marketing in ten seconds</h3>
 <p>Foundation pays off: "proprietary AI engine" → usually a rented model + prompts (ask which model and what happens when it upgrades). "Agentic platform" → tool-calling loop (ask about permission boundaries and trajectory logging). "Trained on your data" → almost always RAG, not training (ask about retrieval quality measurement). "99% accurate" → on whose test set? (ask for evals on cases like yours — the question that separates engineering from demo-ware, every time).</p>
 <div class="callout"><strong>The five questions that make you the adult in the vendor meeting:</strong> (1) Show evals on cases like ours — set, rubric, scores. (2) Data flow: training use? retention? residency? (3) Model dependency: whose models, what's the upgrade/regression process? (4) Pricing at our realistic volume — and the overage story. (5) Exit: what do we keep — prompts, configurations, eval sets, data? Vendors with real engineering answer crisply. Vendors with demos change the subject. Either way, you got your answer.</div>
@@ -197,6 +231,16 @@ export const tracksB = [
 <p>Remember the foundation: AI performance is capped by the context you can feed it. For LLM/RAG initiatives, readiness means: <strong>Does the knowledge exist digitally?</strong> (Tribal knowledge in heads can't be retrieved.) <strong>Is it findable and current?</strong> (A SharePoint of seven contradictory policy versions retrieves… confidently wrong answers. Curation beats volume.) <strong>Is access governed?</strong> (Retrieval must respect permissions — the intern's chatbot must not quote the M&A folder. Say "access control at retrieval time" and watch the security team relax.) <strong>Is there an owner?</strong> (Stale knowledge bases make stale AI; someone must own freshness.) Run this checklist in week one — it predicts the project's fate better than any model benchmark.</p>
 <h3>Governance — the EU AI Act in one paragraph</h3>
 <p>The world's reference regulation works on <strong>risk tiers</strong>: <em>prohibited</em> uses (social scoring, manipulative systems); <em>high-risk</em> (hiring, credit, essential services — heavy obligations: documentation, human oversight, accuracy monitoring); <em>limited-risk</em> (chatbots — mainly transparency: users must know it's AI); <em>minimal</em> (most internal productivity uses — light touch). The consultant's screen: <strong>"Does this use case make consequential decisions about people?"</strong> If yes — hiring, lending, claims decisions — expect the high-risk regime anywhere in the world, design human oversight in from day one, and price the compliance work. If it drafts documents for professional review, you're almost always in light-touch territory.</p>
+<table class="viz-table">
+  <thead><tr><th>Risk tier</th><th>Example uses</th><th>Obligation</th></tr></thead>
+  <tbody>
+    <tr><td>Prohibited</td><td>Social scoring, manipulative systems</td><td>Banned</td></tr>
+    <tr><td>High-risk</td><td>Hiring, credit, essential services</td><td>Documentation, human oversight, monitoring</td></tr>
+    <tr><td>Limited-risk</td><td>Chatbots</td><td>Transparency — users must know it's AI</td></tr>
+    <tr><td>Minimal</td><td>Most internal productivity uses</td><td>Light touch</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">EU AI Act tiers follow consequence to people, not technology choice.</div>
 <div class="callout"><strong>The governance kit every client needs (and few have):</strong> an acceptable-use policy (which tools, which data classes — the "client data only in approved tools" rule scaled to an org); a use-case intake with risk triage (the tier question above); human-oversight standards per tier; logging/audit for consequential uses; and an incident path ("the AI said something wrong and a customer acted on it — who does what?"). Offering to draft this kit is among the highest-value, lowest-tech AI engagements that exist.</div>
 <h3>Why this is your edge</h3>
 <p>Everyone sells models and demos. Almost nobody walks in asking "is the knowledge curated, who owns freshness, and which risk tier are we in?" — the questions that actually decide outcomes. Unglamorous fluency, premium positioning.</p>`,
@@ -223,6 +267,15 @@ export const tracksB = [
 <li><strong>Burned</strong> ("we piloted a chatbot in 2024; it embarrassed us"): your job is diagnosis, not cheerleading. Usually the post-mortem finds: no eval discipline, no review design, wrong use case. Show what's different when those exist — their scar tissue becomes your specification.</li>
 <li><strong>Paralyzed</strong> ("it changes weekly; we'll wait until it settles"): your job is the Mollick argument — it will not settle, the capability you build compounds, and waiting is a decision with costs. Smallest safe start: one internal, low-risk, high-frequency task. (Sound familiar? It's this platform's pedagogy applied to an enterprise.)</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Client state</th><th>The tell</th><th>Your job</th></tr></thead>
+  <tbody>
+    <tr><td>FOMO-driven</td><td>"Everyone has a strategy but us"</td><td>Channel energy to task-level value</td></tr>
+    <tr><td>Burned</td><td>"We piloted a chatbot; it embarrassed us"</td><td>Diagnose, not cheerlead</td></tr>
+    <tr><td>Paralyzed</td><td>"We'll wait until it settles"</td><td>The Mollick argument; smallest safe start</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">Read the room before you prescribe.</div>
 <h3>The discovery questions that open everything</h3>
 <p>Skip "what's your AI strategy?" Ask instead: <em>"Where does expensive reading and writing happen in volume?"</em> (points at the sweet spots) · <em>"What would you review-everything if review were free?"</em> (finds the newly-possible) · <em>"What knowledge lives only in your best people's heads?"</em> (data readiness, succession risk, and a RAG candidate in one) · <em>"What did your last AI experiment teach you?"</em> (reads the scar tissue). Each maps directly to a module you've completed — you're not reciting a script, you're navigating with a map.</p>
 <h3>Demo wisely, promise precisely</h3>
@@ -319,6 +372,11 @@ export const tracksB = [
 <p>Your career is built on a contract: defined expected behavior, reproducible steps, deterministic verdicts. LLM features break all three clauses — same input, varied output; "correct" is a judgment with many acceptable answers; and there's no complete spec to test against, because the behavior was learned, not written. Before the playbook, the mindset shift that makes it click.</p>
 <h3>From verdicts to distributions</h3>
 <p>Stop asking "does it pass?" Start asking <strong>"how well does it perform across a representative distribution of cases — and is that changing?"</strong> You're moving from binary verdicts to measurement: scores, rates, confidence intervals, trends. Less like checking a calculator, more like evaluating an employee: you assess work samples across situations, not a single answer.</p>
+<div class="viz viz-vs">
+  <div class="vs-side bad"><h4>Binary verdicts</h4><p>Does it pass? One input, one expected answer, checked like a calculator.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side good"><h4>Distributions</h4><p>How well across representative cases — scores, rates, trends, like evaluating an employee.</p></div>
+</div>
 <h3>What survives from the classic playbook (more than you'd fear)</h3>
 <ul>
 <li><strong>Boundary analysis</strong> → empty inputs, maximum-length documents, mixed languages, malformed data: still gold, still finds bugs.</li>
@@ -349,6 +407,13 @@ export const tracksB = [
 <h3>Anatomy of a golden set</h3>
 <p>For each case: <strong>input</strong> (realistic! production-shaped messiness included), <strong>reference</strong> (expected answer where one exists, or key facts that must appear), <strong>rubric criteria</strong> (what to grade), and <strong>tags</strong> (category, difficulty, source) so you can slice scores — "we regressed specifically on long-document cases" is a finding; "the score went down" is a shrug.</p>
 <p>Composition follows your old partitioning instincts: ~60% typical cases (weighted by real frequency), ~20% edge cases (boundaries, odd formats, ambiguity), ~10% adversarial (injection attempts, off-topic bait, trick premises), ~10% <strong>must-never-fail</strong> cases — the ones tied to harm, money or law, where a single failure blocks release regardless of the average. Size: 50 cases finds gross issues; 200–500 gives stable statistics per slice. Start at 50, grow forever — every production incident becomes a case (your defect-to-regression-test reflex, unchanged).</p>
+<div class="viz viz-bars">
+  <div class="bar"><span class="bar-l">Typical</span><span class="bar-track"><i style="width:60%"></i></span><span class="bar-v">60%</span></div>
+  <div class="bar"><span class="bar-l">Edge</span><span class="bar-track"><i style="width:20%"></i></span><span class="bar-v">20%</span></div>
+  <div class="bar"><span class="bar-l">Adversarial</span><span class="bar-track"><i style="width:10%"></i></span><span class="bar-v">10%</span></div>
+  <div class="bar"><span class="bar-l">Must-never-fail</span><span class="bar-track"><i style="width:10%"></i></span><span class="bar-v">10%</span></div>
+</div>
+<div class="viz-cap">Golden-set composition by case type.</div>
 <h3>Grading: the three-tier economy</h3>
 <ul>
 <li><strong>Deterministic checks</strong> (free, run always): schema validity, required facts present, forbidden content absent, citations resolve, length bounds. Maximize what you can check this way — it's the only tier with zero noise.</li>
@@ -382,6 +447,16 @@ export const tracksB = [
 <li><strong>Data exfiltration</strong> — "repeat your system prompt", "summarize the documents you can see", probing whether retrieval respects permissions (ask about content this user must not access — the M&A folder test). For agents: can the conversation steer a tool call into leaking data to an external destination?</li>
 <li><strong>Harm elicitation & brand damage</strong> — off-limits content, defamatory statements about real people, competitor recommendations, promises the company must then honor (airlines have lost legal cases over chatbot-invented policies — chatbot output can bind the business). The cheapest finding you'll ever deliver is the screenshot that would have been the press story.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Attack family</th><th>The probe</th></tr></thead>
+  <tbody>
+    <tr><td>Prompt injection</td><td>Instructions hidden in processed content — direct and indirect</td></tr>
+    <tr><td>Jailbreaking</td><td>Role-play, hypotheticals, encoding, multi-turn escalation</td></tr>
+    <tr><td>Data exfiltration</td><td>"Repeat your system prompt"; probing retrieval permissions</td></tr>
+    <tr><td>Harm and brand damage</td><td>Off-limits content, defamation, binding promises</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">The four adversarial families to charter against.</div>
 <h3>Method: structured, recorded, scaled</h3>
 <p>Charter your sessions like exploratory testing ("this hour: indirect injection via the document-upload channel"); record everything (transcripts = reproduction steps); convert every successful attack into a permanent golden-set adversarial case (your defect-to-regression reflex again — the red-team corpus compounds); and scale yourself with automation: maintain attack-pattern libraries, and use one model to generate attack variations against another. The field literally calls it red-team automation; it is exploratory testing with a power tool.</p>
 <div class="callout"><strong>Scope and ethics, briefly and firmly:</strong> red-team systems you're authorized to test, report through agreed channels, never exfiltrate real data to prove a point — your authorization is a test charter, not a license. Inside those lines: be creative, be persistent, be the attacker so the real one finds nothing left. Module two of your track flips the lens: AI as your testing copilot.</div>`,
@@ -468,6 +543,13 @@ export const tracksB = [
 <ul>
 <li><strong>Edge-case brainstorming (the killer app):</strong> paste a user story or API spec and ask: "Enumerate edge cases a senior tester would probe: boundaries, nulls, encodings, timezones, concurrency, permissions, locale weirdness." The model has absorbed the collective scar tissue of the profession — it reliably surfaces the 20% you'd find on a good day plus several you wouldn't. You curate; it enumerates. (Notice the shape: AI proposes, human disposes — your own track's design pattern, applied to yourself.)</li>
 <li><strong>Test case drafting:</strong> requirements → structured cases with steps, data and expected results, in your team's exact format (show it two examples — few-shot, from your foundation). First drafts in seconds; your review converts them from plausible to correct. That review is non-negotiable: generated cases can include subtly wrong expected results — confidently. Every artifact carries the same rule: <strong>AI writes, QA signs.</strong></li>
+</ul>
+<div class="viz viz-vs">
+  <div class="vs-side good"><h4>AI proposes</h4><p>Enumerates edge cases, drafts cases and data in seconds — the profession's scar tissue at scale.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side"><h4>Human disposes</h4><p>Curates, prioritizes and verifies; expected results can be confidently wrong. AI writes, QA signs.</p></div>
+</div>
+<ul>
 <li><strong>Test data factories:</strong> "Generate 50 customer records as JSON: valid mainstream cases plus accented names, 64-character emails, leap-day birthdays, RTL scripts, maximum-length addresses…" — realistic, varied, deliberately spiky data on demand. Two cautions: <em>never paste real customer data as the example</em> (anonymize first — your confidentiality rule), and remember generated data inherits plausible-not-valid risks: validate formats before trusting checksummed fields (IBANs, VAT numbers — the jagged frontier strikes precisely there).</li>
 </ul>
 <h3>Where it stumbles (the frontier's dips)</h3>
@@ -494,6 +576,13 @@ export const tracksB = [
 <p>Classic break: the button's ID changed, forty tests fail, nothing is wrong. AI-era tools locate elements by <em>semantic intent</em> ("the primary submit button in the checkout form") with visual and structural context, surviving cosmetic refactors. Modern frameworks heal locators automatically and report the heal for review. Evaluate such tools with your own discipline: a healed locator is a <em>guess</em> — demand the audit trail, and treat repeated heals on one element as a smell worth a conversation with the dev team.</p>
 <h3>2. Failure triage (the highest-ROI application — build this)</h3>
 <p>The nightly run drops 73 failures on you; the first hour of every day is archaeology. An LLM with the failure output, stack traces, diff of recent commits and test history clusters them in seconds: "61 share a root cause: login service timeout — infrastructure, not product. 9 match the known flaky-websocket signature. 3 are novel — and these two touch the payment flow changed in yesterday's deploy; start there." That's synthesis over volume — squarely in the sweet spots, and it converts your morning from archaeology to verification. Teams wire this into CI as an automatic comment on the failed run. Verify the clustering before acting (it will occasionally group by coincidence), but even 90%-right triage transforms the economics of a large suite.</p>
+<div class="viz viz-stats">
+  <div class="vstat"><b>73</b><span>nightly failures landed</span></div>
+  <div class="vstat"><b>61</b><span>one root cause: login timeout</span></div>
+  <div class="vstat"><b>9</b><span>known flaky-websocket signature</span></div>
+  <div class="vstat"><b>3</b><span>novel — start here</span></div>
+</div>
+<div class="viz-cap">73 failures are usually three stories.</div>
 <h3>3. Coverage conversation (useful, with care)</h3>
 <p>Feed requirements + existing suite, ask "what's untested?" Treat output as hypotheses for your judgment, not findings — it can't know what your exploratory sessions covered. Best used quarterly as a fresh-eyes review of suite blind spots.</p>
 <div class="callout"><strong>The flaky-test reframe you already earned:</strong> module one taught you pass-rate-as-measurement for AI features. Apply it backwards to your classic suite: a test passing 92% of runs is emitting a signal — environment instability, race condition, timing assumption. AI triage clusters flaky signatures across months of runs and surfaces the pattern ("fails only on Mondays after the data refresh"). The flaky test was never the problem; it was the messenger. Now you have a tool that reads messenger-ese.</div>`,
@@ -516,6 +605,11 @@ export const tracksB = [
 <p>Close the track with the question under everyone's keyboard: <em>what happens to QA careers?</em> The honest answer has a direction, and for those who act on it, the direction is up.</p>
 <h3>What genuinely shrinks</h3>
 <p>Manual regression clicking, boilerplate case writing, test-data hand-crafting, failure archaeology — the mechanical layer is compressing fast, exactly like the "human photocopier" tasks in every other profession. Pretending otherwise wastes your planning time.</p>
+<div class="viz viz-vs">
+  <div class="vs-side bad"><h4>Shrinks</h4><p>Manual regression clicking, boilerplate cases, hand-crafted test data, failure archaeology.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side good"><h4>Grows faster</h4><p>Eval engineering, quality architecture, AI-risk specialism, the human judgment layer.</p></div>
+</div>
 <h3>What grows (faster than the shrink)</h3>
 <ul>
 <li><strong>Eval engineering:</strong> every AI feature shipping anywhere needs golden sets, rubrics, calibrated judges, red-team coverage — a discipline barely older than this course, with demand exploding and almost no incumbents. You finished module one of this track; you are already ahead of most of the market.</li>
@@ -619,6 +713,11 @@ export const tracksB = [
 <p>Everything from your foundation compresses to this: <strong>(1)</strong> AI is superb at the routine cognitive layer — drafting, extraction, synthesis, conversation — wherever context can be provided and errors can be caught by review. <strong>(2)</strong> It is unreliable wherever truth matters more than plausibility and no verification step exists. <strong>(3)</strong> Its frontier is jagged and moving — so capability claims are empirical questions, answered by evals, never by demos or vendor decks. Carry these three sentences into every steering committee; they will not embarrass you, and they will disqualify half the proposals you see.</p>
 <h3>Why 40% of agent projects were predicted to fail</h3>
 <p>Gartner's much-quoted forecast — over 40% of agentic AI projects scrapped by 2027 — is your most useful statistic, because the post-mortems repeat four patterns you can screen for at approval time: <strong>wrong use case</strong> (automation where error tolerance was zero — the triangle would have caught it); <strong>no measurement</strong> (launched on demo applause, no evals, quality invisible until the incident); <strong>integration underestimated</strong> (the model was fine; getting it secure access to systems was the actual project — the #1 cited blocker in industry surveys); and <strong>adoption ignored</strong> (working tool, unconvinced workforce, zero usage). Note what's absent from the list: "the AI wasn't smart enough." Capability is rarely the binding constraint. Execution discipline is.</p>
+<div class="viz viz-stats">
+  <div class="vstat"><b>40%+</b><span>of agentic AI projects scrapped by 2027</span></div>
+  <div class="vstat"><b>4</b><span>repeating failure patterns</span></div>
+  <div class="vstat"><b>#1</b><span>blocker: integration, not capability</span></div>
+</div>
 <div class="callout"><strong>The portfolio screen — four questions before any AI initiative gets funded:</strong> Which routine cognitive task, at what volume? (value) · Where will the context come from, and is the data ready? (feasibility) · What is the eval plan and the quality gate for go-live? (measurement) · Who reviews AI output before it matters, and who owns adoption? (operating model). Initiatives with four crisp answers succeed at rates that would flip Gartner's statistic. Initiatives with applause instead of answers become the statistic.</div>
 <h3>The two failure modes of leadership posture</h3>
 <p>Overcaution — banning or burying AI in committee — quietly taxes you: your best people use it anyway (unsanctioned, ungoverned: shadow AI), competitors compound their learning curve, and recruiting notices. Overenthusiasm — mandating "AI everywhere" without the screen above — manufactures the 40%. The posture that works is the one this course has taught throughout: <strong>structured contact with reality</strong> — real pilots, real measurement, real review gates, scaled when the numbers say so.</p>`,
@@ -645,6 +744,15 @@ export const tracksB = [
 <li><strong>Per-token consumption</strong> (custom features and agents): scales with usage — a feature that succeeds can cost 10× its pilot estimate <em>as a success signal</em>, but you want that growth forecast, capped and alerted, not discovered. Insist any custom AI business case states cost-per-use × realistic volume (your PO peers learned the napkin math; require the napkin).</li>
 <li><strong>The build & run iceberg:</strong> the model API is often the <em>smallest</em> line. Integration engineering, data readiness work, eval development, monitoring and change management routinely run 3–5× the inference bill. Budgets that only show the API line are demos in spreadsheet form.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Cost shape</th><th>Unit</th><th>The leadership move</th></tr></thead>
+  <tbody>
+    <tr><td>Per-seat tools</td><td>~$20–60/user/month</td><td>Audit utilization; buy in waves</td></tr>
+    <tr><td>Per-token consumption</td><td>Scales with usage</td><td>Forecast, cap and alert</td></tr>
+    <tr><td>Build and run iceberg</td><td>3–5× the inference bill</td><td>Budget the whole iceberg, not the API tip</td></tr>
+  </tbody>
+</table>
+<div class="viz-cap">The three cost shapes a leader sanity-checks.</div>
 <h3>The productivity measurement trap</h3>
 <p>"AI made the team 30% faster" claims deserve your scrutiny. Self-reported time savings inflate; activity metrics (more code, more documents) measure volume, not value; and the review time your governance correctly added eats part of the gross gain. Honest measurement: <strong>baseline before pilot</strong> (actual cycle times, actually measured), then compare end-to-end flow — including review — on the same work type. Expect honest nets of 20–50% on suitable tasks: genuinely transformative, and roughly half of what the headlines claim. Quote the honest number; your credibility is worth more than the slide.</p>
 <div class="callout"><strong>Where the saved time goes is a leadership decision, not an accounting entry:</strong> the gain becomes value as more throughput, better quality (review-everything instead of sample), faster client response, or capacity for the previously-impossible. Decide which, explicitly, per team — or the time evaporates into Parkinson's law and your AI program will be accused of having delivered nothing measurable. The follow-the-time discipline is also your best defense of the program's budget next cycle.</div>
@@ -671,6 +779,14 @@ export const tracksB = [
 <p>Approve no pilot without four pre-commitments, in writing: <strong>baseline</strong> (current performance, measured before start — unmeasured baselines make results unprovable and scaling unfundable); <strong>gates</strong> (the quality threshold — eval scores — and the value threshold — net time/cost — that define success); <strong>the scale path</strong> (if gates pass: what team, what budget, what timeline takes it wider — agreed BEFORE the pilot, or success leads nowhere); and <strong>the kill criterion</strong> (if gates fail: it stops, and the learning is written down — a graveyard of zombie pilots consuming attention is worse than honest kills). This contract is one page. It is the difference between an AI program and AI theater.</p>
 <h3>Sequencing the portfolio</h3>
 <p>Run waves, not big bangs: <strong>Wave 1</strong> — internal, low-risk, high-frequency (drafting, summarization, knowledge Q&A): fast wins, builds fluency, low blast radius. <strong>Wave 2</strong> — workflow integration with review gates (your BAs' three-swimlane redesigns): real process change, real measurement. <strong>Wave 3</strong> — client-facing and agentic: only on top of demonstrated eval discipline and operating maturity from waves 1–2. Skipping to wave 3 because a competitor's press release went there is how organizations donate case studies to Gartner's 40%.</p>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Internal, low-risk, high-frequency</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Workflow integration with review gates</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Client-facing and agentic</div>
+</div>
+<div class="viz-cap">Sequence in waves; skipping ahead manufactures failures.</div>
 <h3>The operating spine that scaling requires</h3>
 <p>Scaled AI needs owners the org chart didn't have: someone owning <strong>evals as a shared service</strong> (your QA leads are ready — their track trained them for exactly this); someone owning <strong>model/vendor strategy</strong> (portfolio, not per-team marriages); someone owning <strong>the governance kit</strong> (acceptable use, risk triage, incident path — lightweight, enabling, enforced); and per-initiative <strong>adoption owners</strong> (the tool nobody uses saves nothing — somebody's name goes next to usage). Small council, light process, real authority. The alternative is forty teams making forty independent vendor decisions, none with evals.</p>
 <div class="callout"><strong>The leader's weekly question:</strong> replace "are we doing AI?" with <em>"what did we measure this week, and what decision does it force?"</em> — the question that turns AI from a topic into a program. Module two: the human side — leading the people through the shift.</div>`,
@@ -755,6 +871,11 @@ export const tracksB = [
 <p>The hardest part of enterprise AI is not in any architecture diagram: it's the moment a capable professional quietly concludes <em>"this thing is here to replace me"</em> — and disengages, resists or polishes their CV. Adoption is psychology before it is technology, and leaders own the psychology.</p>
 <h3>Name the fear, then narrow it</h3>
 <p>Vague fear is unmanageable; specific truth is. The honest message, delivered without corporate anesthesia: <em>"AI will absorb a real share of the routine layer of our work — the drafting, the summarizing, the photocopier hours. The judgment, the client trust, the accountability stay human, and they become a bigger share of everyone's day. Our plan is to be excellent at that new mix, and here is the training, the time and the safety to get there."</em> Then — critically — behave consistently with it: if AI time savings immediately convert to headcount cuts, every future adoption message is dead on arrival. The organizations winning the talent side treat recovered hours as capacity for growth, quality and development — and say so out loud, repeatedly.</p>
+<div class="viz viz-vs">
+  <div class="vs-side bad"><h4>The routine layer</h4><p>Drafting, summarizing, the photocopier hours — AI absorbs a real share.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side good"><h4>The human layer</h4><p>Judgment, client trust, accountability — stays human and a bigger share of the day.</p></div>
+</div>
 <h3>Make practice safe and visible</h3>
 <p>People learn AI by contact (the jagged frontier admits no other route), and contact requires psychological safety plus permission: <strong>sanctioned tools</strong> (so practice isn't policy violation — shadow AI thrives exactly where sanctioned AI is absent); <strong>explicit practice time</strong> (the ten-minutes-daily habit, blessed from the top — what leaders measure and mention, people do); <strong>failure-friendly forums</strong> ("what I tried, where it failed" sessions where seniors share their AI misses first — the fastest psychological-safety signal a leader can send); and <strong>champions over mandates</strong> (every team has two natural experimenters; resource them, platform them, let peer proof do what policy cannot).</p>
 <div class="callout"><strong>Watch the junior pipeline — a leadership-grade risk hiding in plain sight:</strong> AI absorbs precisely the routine tasks juniors learned the craft on. If your operating model quietly assumes "AI does the junior work", you are eating your seniors' replacements. Redesign development paths deliberately: juniors now learn by <em>reviewing</em> AI output against quality bars (faster exposure to more cases than drafting ever gave them), by owning evals, by running the verification layer. The firms that solve junior development in the AI era win the decade's talent compounding; the ones that don't will discover the hole in five years, all at once.</div>
@@ -777,6 +898,12 @@ export const tracksB = [
             minutes: 7,
             content: `
 <p>Two governance failure modes, equally expensive: the <strong>free-for-all</strong> (client data pasted into consumer tools, forty vendors, no audit trail — works fine until the incident, which arrives) and the <strong>frozen org</strong> (six-month approval cycles, banned tools, shadow AI everywhere — all the risk, none of the learning). The third way is lightweight governance that makes the right thing the easy thing. You've met its components throughout the course; here they assemble into the leader's kit.</p>
+<div class="viz viz-vs">
+  <div class="vs-side bad"><h4>Free-for-all</h4><p>Client data in consumer tools, forty vendors, no audit trail — fine until the incident arrives.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side bad"><h4>Frozen org</h4><p>Six-month approvals, banned tools, shadow AI everywhere — all the risk, none of the learning.</p></div>
+</div>
+<div class="viz-cap">Both failure modes are equally expensive — the third way is enabling guardrails.</div>
 <h3>The five-piece governance kit</h3>
 <ul>
 <li><strong>Acceptable use, on one page:</strong> which tools are sanctioned for which data classes ("client-identifying data only in firm-approved tools; anonymize by default") — written for humans, not lawyers, with examples. If it takes longer to read than the task it governs, it will be skipped.</li>
@@ -812,6 +939,16 @@ export const tracksB = [
 <li><strong>Measurement as culture:</strong> the weekly question from module one — <em>what did we measure, what decision does it force?</em> — practiced until it's reflex. Firms that measure learn; firms that demo repeat.</li>
 <li><strong>Slack for exploration:</strong> compounding requires experiments, and experiments require sanctioned slack — the champion's Friday afternoon, the pilot budget line that survives the cost review. The portfolio math: most experiments return learning, a few return the next wave-one win, and occasionally one returns the practice that differentiates the firm. That asymmetry is the budget's justification.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Habits over events</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Shared memory</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Measurement as culture</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Slack for exploration</div>
+</div>
+<div class="viz-cap">The learning flywheel's four bearings.</div>
 <h3>What to watch on the horizon (the leader's light diet)</h3>
 <p>Agents maturing from copilots to coworkers — watch the permission-boundary and accountability questions, they land on delivery leaders first. Regulation tightening — the risk-tier muscle you built is durable. Capability jumps continuing — Mollick's rule 4 is a planning assumption, not a slogan: whatever you architect, assume the AI inside it improves twice before the contract renews. And the talent market repricing — AI-fluent professionals at every level, your juniors included, now have a market; retention is partly an AI-program quality question.</p>
 <div class="callout"><strong>Track complete — and a closing mirror:</strong> you've built the strategy screen, the economics, the pilot discipline, the psychology, the governance and the flywheel. Notice that every one of them is a <em>learning</em> structure — which is the quiet thesis of this whole platform: the organizations that thrive with AI are the ones that institutionalize what you just did personally. The "Client-Ready AI Briefing" and "AI Workflow Audit" projects turn your track into artifacts; your tree is waiting on the fruit. Lead from the front: finish with your hands.</div>`,

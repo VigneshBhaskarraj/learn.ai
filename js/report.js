@@ -93,7 +93,7 @@ export function viewReport(ctx) {
     <div class="report-toolbar no-print">
       <h1 class="page-title">AI Readiness Profile</h1>
       <p class="page-sub">Your evidence, on one page — show a manager, attach to a review, or save as PDF.</p>
-      <button class="btn btn-primary" id="report-print">🖨️ Print / Save as PDF</button>
+      <button class="btn btn-primary btn-big" id="report-print">🖨️ Print / Save as PDF</button>
     </div>
     ${buildReportHtml()}
   `);

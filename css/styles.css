@@ -481,6 +481,57 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .shield { font-size: 0.74rem; }
 .celebrate-actions { display: flex; gap: 10px; justify-content: center; }
 
+/* ---------- lesson visual toolkit (infographics, charts, tables) ---------- */
+.viz { margin: 1.5em 0; }
+.viz-cap { font-size: 0.76rem; color: var(--muted); text-align: center; margin-top: 8px; }
+
+/* stat strip */
+.viz-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+.vstat { text-align: center; background: linear-gradient(160deg, rgba(47,184,127,0.14), rgba(255,255,255,0.03)); border: 1px solid var(--card-border); border-radius: 14px; padding: 14px 8px; }
+.vstat b { display: block; font-size: 1.5rem; font-weight: 800; color: #57e0a3; line-height: 1.1; letter-spacing: -0.02em; }
+.vstat span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+/* clean comparison table */
+.viz-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; }
+.viz-table thead th { background: rgba(47,184,127,0.14); color: #cfe9da; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 10px 12px; }
+.viz-table td { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.06); vertical-align: top; }
+.viz-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.viz-table td:first-child { font-weight: 650; color: var(--text); }
+
+/* A vs B */
+.viz-vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; }
+.vs-side { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 14px; }
+.vs-side h4 { margin: 0 0 6px; font-size: 0.92rem; color: #cfe9da; }
+.vs-side p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.vs-side.good { border-color: rgba(47,184,127,0.4); }
+.vs-side.bad { border-color: rgba(226,101,79,0.35); }
+.vs-mid { display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--muted); font-size: 0.8rem; }
+
+/* labeled bar chart */
+.viz-bars { display: grid; gap: 9px; }
+.bar { display: grid; grid-template-columns: 96px 1fr auto; gap: 10px; align-items: center; }
+.bar-l { font-size: 0.82rem; color: var(--text); }
+.bar-track { height: 12px; border-radius: 7px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.bar-track i { display: block; height: 100%; border-radius: 7px; background: linear-gradient(90deg,#2fb87f,#f4b440); }
+.bar-v { font-size: 0.78rem; color: var(--muted); font-weight: 700; min-width: 34px; text-align: right; }
+
+/* numbered flow / pipeline */
+.viz-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.flow-step { flex: 1; min-width: 84px; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 11px 10px; text-align: center; font-size: 0.82rem; font-weight: 650; }
+.flow-step b { display: inline-flex; width: 22px; height: 22px; margin-bottom: 5px; align-items: center; justify-content: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 0.78rem; }
+.flow-arrow { display: flex; align-items: center; color: var(--muted); font-weight: 800; }
+
+@media (max-width: 460px) {
+  .viz-vs { grid-template-columns: 1fr; }
+  .vs-mid { padding: 2px 0; }
+  .viz-flow { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); justify-content: center; }
+}
+@media print {
+  .vstat, .vs-side, .flow-step { background: #f3f7f3 !important; }
+  .bar-track i { background: #2fb87f !important; }
+}
+
 /* ---------- second hat (hybrid roles) ---------- */
 .second-hat { margin: 6px 0 18px; padding: 14px 15px; border: 1px dashed var(--card-border); border-radius: 16px; background: rgba(255, 255, 255, 0.03); animation: rise 0.3s ease both; }
 .sh-head { font-size: 0.92rem; font-weight: 750; margin-bottom: 10px; }
