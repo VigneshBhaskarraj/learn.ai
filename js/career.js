@@ -221,7 +221,7 @@ function renderLoading(ctx) {
   ctx.shell('career', `
     <div class="career-loading card">
       <div class="seedling-pulse">🧭</div>
-      <h2>Analyzing your profile…</h2>
+      <h1 class="page-title">Analyzing your profile…</h1>
       <p class="hint">Mapping your experience and strengths onto AI-era roles. Usually under 15 seconds.</p>
       <div class="loading-bar"><div class="loading-fill"></div></div>
     </div>

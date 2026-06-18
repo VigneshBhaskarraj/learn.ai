@@ -25,6 +25,12 @@ export const foundationB = [
 <li><strong>The brilliance:</strong> fluent drafting, translation, summarization, coding — all are "continue this text well" in disguise.</li>
 <li><strong>The flaws:</strong> the model generates what's <em>plausible</em>, not what's <em>verified</em>. When plausible and true diverge, you get confident nonsense — hallucination. Same engine, both outcomes.</li>
 </ul>
+<div class="viz viz-vs">
+  <div class="vs-side good"><h4>Plausible</h4><p>What the model always produces: a fluent continuation that fits the pattern. Powers drafting, translation, summarizing, coding.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side"><h4>Verified</h4><p>What is actually true. The model never checks this on its own — when it diverges from plausible, you get confident hallucination.</p></div>
+</div>
+<div class="viz-cap">One engine, both faces: brilliance and hallucination share a mechanism.</div>
 <p>Hold this lesson close: it is the single highest-leverage piece of intuition in modern AI. Nearly every strength and weakness you'll ever observe in an AI assistant traces back to "it is generating a plausible continuation."</p>`,
         takeaways: [
           'An LLM does one thing: predict the next token of text — at colossal scale.',
@@ -45,6 +51,12 @@ export const foundationB = [
 <p>Two technical terms appear in every AI product conversation, every pricing page, and every limitation you'll ever hit. Master them here, in plain language.</p>
 <h3>Tokens: the LLM's alphabet</h3>
 <p>Models don't read letters or whole words — they read <strong>tokens</strong>: common chunks of characters. "consulting" might be one token; "Llanfairpwllgwyngyll" might be eight. Rule of thumb in English: <strong>1 token ≈ ¾ of a word</strong>; 1,000 tokens ≈ 750 words.</p>
+<div class="viz viz-stats">
+  <div class="vstat"><b>≈¾</b><span>of a word per token</span></div>
+  <div class="vstat"><b>750</b><span>words in 1,000 tokens</span></div>
+  <div class="vstat"><b>~3K → millions</b><span>context window, 2022 to today</span></div>
+  <div class="vstat"><b>$3</b><span>per million input tokens (200K model)</span></div>
+</div>
 <p>Why you should care: <strong>tokens are the billing meter and the speed limit.</strong> API usage is priced per million tokens (in and out), and generation speed is measured in tokens per second. When a developer says "that feature costs about a cent per request," they counted tokens.</p>
 <h3>The context window: everything the model can "see" right now</h3>
 <p>The <strong>context window</strong> is the maximum number of tokens a model can consider at once — the conversation so far, documents you pasted, instructions, plus its own developing answer. Think of it as <strong>working memory, like a desk</strong>: whatever's on the desk, the model reasons over brilliantly; whatever isn't on the desk <em>does not exist for it.</em></p>
@@ -75,6 +87,14 @@ export const foundationB = [
 <p>Fine-tune on curated examples of question → high-quality answer, written or vetted by humans. The model learns the <em>shape</em> of being an assistant: answer the question asked, be structured, admit limits. Relatively cheap; transformative for usability.</p>
 <h3>Stage 3 — Alignment: sand off the rough edges</h3>
 <p>Humans (and increasingly AI judges) compare pairs of answers — "this one is more helpful / more honest / less harmful" — and reinforcement learning (Module 2's third recipe!) nudges the model toward preferred behavior. This is <strong>RLHF</strong> — reinforcement learning from human feedback. Anthropic adds <strong>Constitutional AI</strong>: the model critiques and revises its own outputs against a written set of principles. Alignment is why the assistant declines to help build weapons and why it sometimes feels overly cautious — that dial is genuinely hard to set.</p>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Pretrain</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Instruction-tune</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Align (RLHF)</div>
+</div>
+<div class="viz-cap">Raw knowledge, then assistant format, then preferred behavior.</div>
 <div class="callout"><strong>Software 3.0 — the punchline:</strong> Karpathy's arc completes here. Software 1.0: humans write code. Software 2.0: training writes the weights. <strong>Software 3.0: the model is a new kind of computer, and you program it in English</strong> — via the context window. Prompts are programs. That makes everyone who can write a clear brief… a programmer. Including you.</div>
 <h3>Why assistants differ</h3>
 <p>ChatGPT, Claude and Gemini all follow this same recipe — differing in data mix, scale, and especially alignment choices. That's why they have noticeably different personalities and strengths, and why "which model?" is now a real product decision (your persona track picks this up).</p>`,
@@ -108,7 +128,16 @@ export const foundationB = [
 <p>Since late 2024, <strong>reasoning models</strong> generate extensive hidden "thinking" tokens — working through the problem step by step, checking themselves — before answering. Hard math, debugging, multi-constraint planning improved dramatically. The trade: slower and pricier per query. Modern product design routes easy queries to fast models, hard ones to thinkers.</p>
 <h3>Power 2 — Multimodality</h3>
 <p>Frontier models now see images, hear audio, read screens and generate all of the above. "Language model" increasingly means "general-purpose model that also speaks fluent human."</p>
-<div class="callout"><strong>The professional's capability map:</strong> Trust drafting, transformation, synthesis and explanation by default (verify tone and emphasis). Verify all facts, figures, citations and anything recent. Route math and data work to tools. Escalate genuinely hard problems to reasoning models. Never delegate final judgment. Print this paragraph on your brain.</div>`,
+<div class="callout"><strong>The professional's capability map:</strong> Trust drafting, transformation, synthesis and explanation by default (verify tone and emphasis). Verify all facts, figures, citations and anything recent. Route math and data work to tools. Escalate genuinely hard problems to reasoning models. Never delegate final judgment. Print this paragraph on your brain.</div>
+<table class="viz-table">
+  <thead><tr><th>Move</th><th>When</th><th>Examples</th></tr></thead>
+  <tbody>
+    <tr><td>Trust</td><td>Default (check tone)</td><td>Drafting, transformation, synthesis, explanation</td></tr>
+    <tr><td>Verify</td><td>Specific or recent</td><td>Facts, figures, citations, anything after the cutoff</td></tr>
+    <tr><td>Route to tools</td><td>Math and data work</td><td>Arithmetic, counting, calculations</td></tr>
+    <tr><td>Escalate</td><td>Genuinely hard problems</td><td>Multi-constraint planning, hard debugging — reasoning models</td></tr>
+  </tbody>
+</table>`,
         takeaways: [
           'Hallucination is structural: generation produces plausibility; verification is your job — scale it with the stakes.',
           'Knowledge cutoffs freeze model knowledge; search and retrieval patch it by loading fresh facts into context.',
@@ -208,6 +237,16 @@ export const foundationB = [
 <li><strong>Format:</strong> what good output looks like — "a table of risk / impact / mitigation", "under 200 words", "as bullet points for an exec."</li>
 <li><strong>Examples:</strong> one or two samples of the style or structure you want. Showing beats describing.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Ingredient</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>Role</td><td>Frames which patterns the model draws on</td></tr>
+    <tr><td>Task</td><td>One unambiguous instruction</td></tr>
+    <tr><td>Context</td><td>Background a new colleague would need — highest-leverage, most skipped</td></tr>
+    <tr><td>Format</td><td>What good output looks like</td></tr>
+    <tr><td>Examples</td><td>A sample or two — showing beats describing</td></tr>
+  </tbody>
+</table>
 <div class="callout"><strong>Remember Software 3.0:</strong> the context window is the program and you are programming in English. A lazy prompt is lazy code — it runs, but you won't like the output. The good news: unlike code, you can simply <em>talk to the program</em> and ask it to fix itself.</div>
 <h3>Iterate — it's a dialogue, not a vending machine</h3>
 <p>First drafts are negotiations: "Shorter. More skeptical. Rewrite point 2 for a CFO. What questions would a regulator ask about this?" Each refinement costs seconds. People who treat AI as one-shot search walk away after a mediocre first answer; people who treat it as a colleague get to remarkable results three exchanges later.</p>
@@ -240,6 +279,14 @@ export const foundationB = [
 <li><strong>Medium</strong> (internal summary, draft user stories): read fully, spot-check any claims against the source.</li>
 <li><strong>High stakes or high specificity</strong> (client deliverables, numbers, names, dates, citations, legal/medical/financial anything): verify every factual claim independently. The model's confidence level carries <em>zero</em> evidential weight — fluency is not accuracy.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Tier</th><th>Examples</th><th>Effort</th></tr></thead>
+  <tbody>
+    <tr><td>Low stakes, low specificity</td><td>Brainstorm titles, rephrase a paragraph</td><td>Skim and go</td></tr>
+    <tr><td>Medium</td><td>Internal summary, draft user stories</td><td>Read fully, spot-check claims</td></tr>
+    <tr><td>High stakes or specificity</td><td>Client deliverables, numbers, names, citations</td><td>Verify every claim independently</td></tr>
+  </tbody>
+</table>
 <h3>The routine: three questions before you ship AI-assisted work</h3>
 <ul>
 <li><strong>"Which claims here are checkable?"</strong> — names, numbers, dates, quotes, citations. Check them.</li>
@@ -277,6 +324,16 @@ export const foundationB = [
 <li><strong>3. Retrieve:</strong> when a user asks something, embed the question too, and fetch the passages whose meanings sit closest.</li>
 <li><strong>4. Generate:</strong> stuff those passages into the context window with the question and an instruction: <em>"Answer using these sources; cite them; say so if they don't contain the answer."</em></li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Chunk</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Index</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Retrieve</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Generate</div>
+</div>
+<div class="viz-cap">RAG: hand the model the right page at question time.</div>
 <div class="callout"><strong>Why everyone loves RAG:</strong> answers cite real sources (auditable!), knowledge updates by updating documents (no retraining), access controls can apply at retrieval time, and hallucination drops sharply. Why it still needs care: retrieval can fetch the wrong passages, stale documents produce confidently stale answers, and quality needs measuring — with evals, naturally.</div>
 <h3>Where you'll meet it</h3>
 <p>Enterprise copilots, "chat with your documents" features, customer-support bots, policy assistants, proposal-drafting tools trained on past bids — RAG, RAG, RAG, RAG, RAG. When a vendor demos "AI that knows your business," your first question is now ready: <em>"What does retrieval quality look like, and how do you measure it?"</em> Watch them recalibrate their pitch.</p>`,
@@ -304,6 +361,14 @@ export const foundationB = [
 <h3>Keep a frontier journal (two minutes, gold mine)</h3>
 <p>One line per notable result: <em>"Drafted SOW section — 80% usable, invented a milestone date (caught it)."</em> Three weeks of entries becomes your personal playbook of where AI is brilliant, where it's risky, and which briefing patterns work — knowledge no course can give you, because your frontier is yours.</p>
 <div class="callout"><strong>The two-week challenge, formally issued:</strong> (1) Ten-second invitation on every task. (2) One deliberate AI rep each morning. (3) One journal line per notable result. That's the whole assignment — and it's also Project territory: the "AI Workflow Audit" project in your path turns exactly this into a portfolio piece with measured results.</div>
+<table class="viz-table">
+  <thead><tr><th>Habit</th><th>Cadence</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>Ten-second invitation</td><td>Every task</td><td>Map your personal jagged frontier</td></tr>
+    <tr><td>One deliberate AI rep</td><td>Each morning</td><td>Consistency compounds into fluency</td></tr>
+    <tr><td>One journal line</td><td>Per notable result</td><td>Build your personal playbook</td></tr>
+  </tbody>
+</table>
 <h3>Where you now stand</h3>
 <p>Foundation nearly complete: you know what AI is, how it learns, how LLMs work, and how to work with them daily. One module remains — the frontier itself: agents, tools, and how to keep your footing as the ground keeps moving. Then your tree grows its persona branch.</p>`,
         takeaways: [
@@ -399,6 +464,11 @@ export const foundationB = [
 <li><strong>Tools:</strong> the actions available to it — and the reason it can affect the world rather than just describe it.</li>
 </ul>
 <div class="callout"><strong>Upgrade analogy:</strong> a chatbot is a brilliant advisor locked in a phone booth — all advice, no hands. An agent has hands: a browser, a terminal, your calendar, your company's systems. Same brain, plus the ability to <em>do</em> — which is exactly why both the value and the risk jump an order of magnitude.</div>
+<div class="viz viz-vs">
+  <div class="vs-side"><h4>Chatbot</h4><p>A brilliant advisor in a phone booth — all advice, no hands. It answers.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side good"><h4>Agent</h4><p>Same brain, plus tools: a loop of plan, act, observe, re-plan toward a goal. It acts.</p></div>
+</div>
 <h3>Agents you can already watch working</h3>
 <ul>
 <li><strong>Coding agents</strong> (the most mature): given a ticket, they explore the codebase, write changes, run tests, fix failures, open a pull request. Real engineering teams merge their work daily.</li>
@@ -428,6 +498,14 @@ export const foundationB = [
 <p>Every product with a sparkle-emoji button works the same way underneath: the application sends instructions plus the user's input over an <strong>API</strong> to a model hosted by a provider (Anthropic, OpenAI, Google…), gets text back, and weaves it into the experience. Implications worth knowing: the "AI feature" is often a well-crafted prompt around a rented model (so <em>differentiation comes from context and workflow, not the model</em>); costs are metered per token; and switching providers is increasingly feasible — model choice has become a procurement decision, not a marriage.</p>
 <h3>2. Tool calling: how the model gets hands</h3>
 <p>Developers describe available actions to the model — "you may call <em>search_flights(from, to, date)</em>" — and the model, mid-conversation, can reply with a structured request to use one. The application executes the real action and feeds the result back into the context. <strong>The model never touches your systems directly; it asks, the application acts.</strong> That gap is where all the safety engineering lives — every permission check and audit log sits in it.</p>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Model requests action</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Application checks and executes</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Result fed back to context</div>
+</div>
+<div class="viz-cap">It asks, the application acts — the gap is where safety lives.</div>
 <h3>3. MCP: a standard plug for AI integrations</h3>
 <p>Historically, every app×tool pairing needed custom wiring — N apps × M tools = misery. The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in late 2024 and adopted industry-wide since, standardizes the socket: build one MCP server for your system (CRM, database, ticketing…), and any MCP-capable AI app can use it. The "USB-C of AI" cliché is accurate — and it's why enterprise AI integration estimates dropped from quarters to weeks.</p>
 <div class="callout"><strong>Meeting fluency unlocked:</strong> "The copilot calls the model over API, uses tool calling for actions, and we expose our systems through MCP servers" — a sentence you can now parse, question, and even draw on a whiteboard. Useful question to ask next: <em>"Which tools can it call without human approval?"</em> (Lesson 1's permission boundary — see how it stacks?)</div>`,
@@ -456,6 +534,16 @@ export const foundationB = [
 <li><strong>Grade:</strong> run the system over the whole set on every change. Grade automatically where possible — exact checks where they exist; for judgment calls, use a strong model as grader (<strong>LLM-as-judge</strong>), spot-checked by humans so you can trust the grader itself.</li>
 <li><strong>Compare:</strong> now "did the new prompt help?" has a number. So does "can we switch to the cheaper model?" — run the evals, read the scores.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Golden set</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Rubric</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Grade</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Compare</div>
+</div>
+<div class="viz-cap">Evals turn AI quality from vibes into numbers.</div>
 <div class="callout"><strong>Why this is in the foundation and not just the QA track:</strong> evals are how every role wins AI arguments. POs: evals are your acceptance criteria. Consultants: "what do your evals show?" instantly separates serious vendors from demo-ware. Leaders: eval scores are the only honest dashboard of AI quality. Developers: evals are your regression suite. One discipline, every seat at the table.</div>
 <h3>The cultural shift</h3>
 <p>Industry surveys in 2026 put quality — not capability — as the #1 blocker to deploying AI at scale, and teams' answer is uniform: invest in evals. The phrase to retire from your vocabulary: <em>"it seems to work."</em> The phrase that replaces it: <em>"it scores 94% on our golden set, up from 89% last month."</em> Same product, different profession.</p>`,
@@ -482,6 +570,11 @@ export const foundationB = [
 <li><strong>The principles layer (slow):</strong> learning from data, next-token prediction, context windows, training pipelines, retrieval, tool loops, evals. This is what you just spent six modules acquiring — and it has barely changed in years. New releases mostly <em>recombine</em> these pieces at better price-performance.</li>
 <li><strong>The products layer (fast):</strong> model versions, benchmark leapfrogging, startup launches, feature announcements. Loud, daily, and mostly safe to ignore — because you can now decode any of it on demand from the principles.</li>
 </ul>
+<div class="viz viz-vs">
+  <div class="vs-side good"><h4>Principles (slow)</h4><p>Learning from data, next-token prediction, context windows, retrieval, tool loops, evals. Barely changed in years — what you just learned.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side"><h4>Products (fast)</h4><p>Model versions, benchmark leapfrogging, launches, feature announcements. Loud and daily — decode them on demand from the principles.</p></div>
+</div>
 <p>Watch it work. "Vendor launches agentic copilot with 1M-token context and MCP support" — you just read that as <em>LLM + tool loop + big working memory + standard integrations</em>, and your next question ("what do the evals show?") is better than most analysts'. The headline was new; nothing in it was.</p>
 <h3>A sustainable information diet</h3>
 <p>Karpathy's advice applies doubly to AI news itself: skip the shorts, choose fewer and deeper sources. A working diet: <strong>one weekly digest</strong> (e.g. Ethan Mollick's <em>One Useful Thing</em>, or The Batch from DeepLearning.AI), <strong>one quarterly deep read</strong> (a Karpathy lecture, a major lab's launch deep-dive), and — most important — <strong>daily hands-on use</strong>, because the frontier is learned through fingertips, not feeds. That's 30 minutes a week plus your existing work. Sustainable indefinitely.</p>

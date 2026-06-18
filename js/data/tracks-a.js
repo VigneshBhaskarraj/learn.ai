@@ -31,6 +31,15 @@ export const tracksA = [
 <li><strong>Data & context availability:</strong> does the model have access to what it needs to do the task well? (Remember: what's not in context doesn't exist.) A support-reply drafter with full ticket history is feasible; one without it is a hallucination engine.</li>
 <li><strong>Error tolerance:</strong> what happens when output is wrong — and it sometimes will be? Drafting (human reviews anyway) tolerates errors beautifully. Auto-actions with money, legal or safety consequences don't. The viable zone for most products: <strong>AI proposes, human disposes.</strong></li>
 </ul>
+<table class="viz-table">
+<thead><tr><th>Axis</th><th>Ask</th><th>Green light</th><th>Red flag</th></tr></thead>
+<tbody>
+<tr><td>Value density</td><td>Frequent, painful, time-consuming?</td><td>Saves hours weekly per user</td><td>"Neat" novelty (churns in a month)</td></tr>
+<tr><td>Data &amp; context</td><td>Does the model have what it needs?</td><td>Full ticket history in context</td><td>No context (a hallucination engine)</td></tr>
+<tr><td>Error tolerance</td><td>What if the output is wrong?</td><td>Drafting — human reviews anyway</td><td>Money, legal or safety auto-actions</td></tr>
+</tbody>
+</table>
+<div class="viz-cap">An idea needs all three corners — score every feature on the triangle.</div>
 <div class="callout"><strong>Augment vs automate — the PO's first fork:</strong> automation removes the human (high bar: needs near-perfect reliability or low stakes); augmentation accelerates the human (low bar: only needs to beat a blank page). When in doubt, ship augmentation first — it generates the usage data and trust you need to earn automation later.</div>
 <h3>The four sweet spots, productized</h3>
 <p>From your foundation: drafting, extraction, synthesis, conversation. Map them to your product. What do users write repeatedly? (drafting) What do they re-type from documents? (extraction) What do they scroll to understand? (synthesis) What do they ask support? (conversation). Run this lens over your user journeys and you'll mine more honest AI ideas in an hour than a quarter of brainstorms.</p>
@@ -60,6 +69,13 @@ export const tracksA = [
 <li><em>"100% of out-of-scope questions are declined with the standard redirect — including the 20 adversarial cases."</em></li>
 <li><em>"P95 latency under 4 seconds; cost per request under $0.02 at the 80th percentile of input size."</em></li>
 </ul>
+<div class="viz viz-stats">
+<div class="vstat"><b>&ge;95%</b><span>summaries with zero factual deviations</span></div>
+<div class="vstat"><b>100%</b><span>out-of-scope questions declined</span></div>
+<div class="vstat"><b>&lt;4s</b><span>P95 latency target</span></div>
+<div class="vstat"><b>&lt;$0.02</b><span>cost per request, P80 input</span></div>
+</div>
+<div class="viz-cap">Acceptance criteria as measurable thresholds over a golden set.</div>
 <p>This is why evals sat in your foundation: <strong>the golden set + rubric IS your requirements document</strong> — executable, regression-proof, and far less ambiguous than prose.</p>
 <h3>Specify the failure behavior — it's half the spec</h3>
 <p>Probabilistic features need their failure modes designed, not discovered: What happens when confidence is low? (Hedge, cite, or escalate to human.) When the answer isn't in the retrieved sources? (Say so — never improvise.) When the user asks something off-limits? (Standard redirect.) Write these as first-class user stories. The unhappy paths are where trust is won or destroyed.</p>
@@ -91,6 +107,16 @@ export const tracksA = [
 <li><strong>Give an escape hatch.</strong> Every AI surface needs a visible path to the non-AI route: a human agent, manual entry, undo. Escape hatches paradoxically <em>increase</em> AI usage — safety nets make people jump.</li>
 <li><strong>Close the feedback loop.</strong> Thumbs up/down with optional "what went wrong?" feeds your eval set with real-world failures. Your golden set should grow from production, not imagination.</li>
 </ul>
+<table class="viz-table">
+<thead><tr><th>Pattern</th><th>What it buys you</th></tr></thead>
+<tbody>
+<tr><td>Show your sources</td><td>Clickable citations turn blind faith into quick verification</td></tr>
+<tr><td>Make review effortless</td><td>Editable, diffable draft — the user's edit is the human-in-the-loop</td></tr>
+<tr><td>Communicate confidence honestly</td><td>Calibrated hedging beats fake certainty</td></tr>
+<tr><td>Give an escape hatch</td><td>Safety nets paradoxically increase AI usage</td></tr>
+<tr><td>Close the feedback loop</td><td>Thumbs up/down grows the golden set from real failures</td></tr>
+</tbody>
+</table>
 <div class="callout"><strong>Calibrate expectations at first contact:</strong> the empty state and first-run experience should teach what the feature is good at and where it needs checking — one honest sentence ("Drafts replies from ticket history; verify amounts and dates") saves a thousand support escalations. Overpromising buys a week of wow and a year of churn.</div>
 <h3>The metric that ties it together</h3>
 <p>Beyond usage, track <strong>acceptance rate</strong>: how often users accept/lightly-edit AI output versus discard it. Falling acceptance is your earliest signal of quality drift — long before complaints. Pair it with eval scores (offline truth) and you have the two-gauge dashboard of a well-run AI feature.</p>`,
@@ -179,6 +205,15 @@ export const tracksA = [
 <li><strong>The context & integration layer</strong> — this is where "build" usually means building: your retrieval over your data, your tool integrations (hello MCP), your prompts encoding your domain expertise, your evals. <strong>This layer is your differentiation</strong> — competitors can rent the same model; they can't rent your data and workflow knowledge.</li>
 <li><strong>The application surface</strong> — buy if a vendor product fits your workflow (copilots for sales, support, coding); build when the workflow IS your product or your competitive edge.</li>
 </ul>
+<table class="viz-table">
+<thead><tr><th>Layer</th><th>Default move</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>The model</td><td>Rent via API</td><td>Frontier training costs hundreds of millions; prompting + retrieval covers most needs</td></tr>
+<tr><td>Context &amp; integration</td><td>Build</td><td>Your data, retrieval, prompts and evals — competitors can't rent these</td></tr>
+<tr><td>Application surface</td><td>Buy or build</td><td>Buy if a vendor fits; build when the workflow is your edge</td></tr>
+</tbody>
+</table>
+<div class="viz-cap">Rent the brain, build the differentiation.</div>
 <div class="callout"><strong>Model choice is a portfolio, not a marriage:</strong> different features deserve different models — a cheap fast model for autocomplete, a frontier model for complex analysis, a reasoning model for the hard 5%. Demand the abstraction that lets you switch (the eval suite is your switching insurance: re-run it against the candidate model, read the scores, decide in a day).</div>
 <h3>Questions that make vendors sweat (productively)</h3>
 <p>When buying: What do your evals show, on cases like ours? What happens to our data — training use, retention, residency? What's the model-upgrade policy and how do you regression-test it? Pricing at our realistic volume — tokens, seats, or outcomes? Exit story — what do we keep if we leave? A PO armed with these five runs a better AI procurement than most IT departments did in 2024.</p>`,
@@ -201,6 +236,13 @@ export const tracksA = [
 <p>AI features have a property your roadmap has never had to price: <strong>marginal cost per use.</strong> Classic software costs ~nothing per click; every AI request burns metered tokens. POs who can't do this math ship features that lose money per user. The math, fortunately, is small.</p>
 <h3>The unit economics on one napkin</h3>
 <p><em>Cost per request ≈ (input tokens × input price) + (output tokens × output price).</em> Worked example: a support-reply drafter loads ~6,000 tokens of ticket history + instructions, generates ~500 tokens of reply. On a mid-tier model at $3/million in, $15/million out: <strong>(6,000×3 + 500×15)/1,000,000 ≈ 2.5 cents per draft.</strong> Agent across 20 tickets/day × 250 days ≈ $125/agent/year — trivially good if it saves minutes per ticket. The same feature on a frontier reasoning model could be 10–30× more: now it matters.</p>
+<div class="viz viz-stats">
+<div class="vstat"><b>6,000</b><span>input tokens (ticket history)</span></div>
+<div class="vstat"><b>500</b><span>output tokens (the reply)</span></div>
+<div class="vstat"><b>~2.5&cent;</b><span>cost per draft, mid-tier model</span></div>
+<div class="vstat"><b>~$125</b><span>per agent per year</span></div>
+</div>
+<div class="viz-cap">The napkin math: (6,000&times;$3 + 500&times;$15) / 1M &asymp; 2.5 cents.</div>
 <h3>The four levers when costs bite</h3>
 <ul>
 <li><strong>Right-size the model:</strong> route routine requests to cheap models, hard ones up. (Your evals tell you what "routine" can survive.)</li>
@@ -228,6 +270,11 @@ export const tracksA = [
             minutes: 7,
             content: `
 <p>The defining trap of AI product work: <strong>the demo is 20% of the effort and generates 80% of the expectations.</strong> A weekend prototype dazzles the steering committee; making it dependable takes the actual quarter. Manage the gap or it manages you.</p>
+<div class="viz viz-vs">
+<div class="vs-side good"><h4>Demo</h4><p>Happy-path inputs, builder-chosen, failures re-rolled. 20% of the effort, 80% of the expectations. A weekend.</p></div>
+<div class="vs-mid">vs</div>
+<div class="vs-side"><h4>Dependable</h4><p>Adversarial users, messy data, edge cases at full volume. Golden sets, failure paths, cost controls, monitoring. The quarter.</p></div>
+</div>
 <h3>Why demos mislead (structurally, not dishonestly)</h3>
 <p>Demos run happy-path inputs, chosen by the builder, with failures quietly re-rolled. Production serves adversarial users, messy data, edge cases and Mondays at full volume. Between demo and dependable lie exactly the disciplines of this track: golden sets, failure-path design, cost controls, monitoring. None are visible in the demo; all are the work.</p>
 <h3>The lifecycle that works</h3>
@@ -331,6 +378,16 @@ export const tracksA = [
 <p>Temperature scales randomness in token selection. Near 0: maximally predictable — use for extraction, classification, anything parsed by code. Higher (~0.7–1.0): varied and creative — use for brainstorming and drafts. Default for backend work: <strong>low</strong>. (Even at 0, exact determinism isn't guaranteed — design for it.)</p>
 <h3>Decision 2 — Structured output: never regex an LLM's prose</h3>
 <p>If code consumes the output, demand machine-readable shape: JSON mode / structured-output features constrain generation to a schema you define. Then <strong>validate anyway</strong> (the schema, the enums, the ranges) — and on validation failure, retry with the error appended. That loop converts "mostly works" into "works."</p>
+<div class="viz viz-flow">
+<div class="flow-step"><b>1</b>Constrain to schema</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>2</b>Generate</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>3</b>Validate</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>4</b>Retry with error</div>
+</div>
+<div class="viz-cap">On validation failure, append the error and loop back — "mostly works" becomes "works."</div>
 <h3>Decisions 3–5 — The reliability trio</h3>
 <ul>
 <li><strong>Timeouts & retries with backoff:</strong> model APIs have tail latencies and rate limits (429s). Treat them like any flaky upstream — except note that <em>retries cost money</em>; cap them.</li>
@@ -355,6 +412,16 @@ export const tracksA = [
             minutes: 7,
             content: `
 <p>You met RAG conceptually in the foundation. As the engineer, you own the four design decisions that separate the 60%-accurate demo from the 95%-accurate product. Spoiler: none of them is "pick a vector database."</p>
+<div class="viz viz-flow">
+<div class="flow-step"><b>1</b>Chunk</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>2</b>Retrieve</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>3</b>Generate</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>4</b>Evaluate</div>
+</div>
+<div class="viz-cap">The four decisions you own — and where RAG quality is actually won.</div>
 <h3>Decision 1 — Chunking: the unglamorous king</h3>
 <p>How you split documents dominates quality. Chunks too large → diluted embeddings and wasted context; too small → orphaned fragments missing their context. Strong defaults: split on semantic boundaries (headings, sections) rather than fixed character counts; include overlap; <strong>prepend metadata to each chunk</strong> (document title, section path, date) so retrieved fragments carry their provenance. Tables, slide decks and scanned PDFs need their own strategies — budget real time here.</p>
 <h3>Decision 2 — Retrieval: hybrid beats pure</h3>
@@ -394,6 +461,18 @@ export const tracksA = [
 <li><strong>Decomposition</strong> — one prompt doing five jobs does none well. Pipeline: classify → route → extract → draft → verify. Each stage simple, testable, separately model-sized (cheap model for classify, strong for draft). This is just good systems design wearing new clothes.</li>
 <li><strong>Self-checking</strong> — append a verification pass: "Review your output against the schema and the source; list violations and correct them." Or run a second cheap model as gate. Catches a surprising share of failures for one extra call.</li>
 </ul>
+<div class="viz viz-flow">
+<div class="flow-step"><b>1</b>Classify</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>2</b>Route</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>3</b>Extract</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>4</b>Draft</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>5</b>Verify</div>
+</div>
+<div class="viz-cap">Decomposition: each stage simple, testable and separately model-sized.</div>
 <div class="callout"><strong>The meta-skill — write for the model, not for yourself:</strong> ambiguity a human colleague would resolve from charity, the model resolves from <em>statistics</em> — sometimes your way, sometimes not. Concrete nouns, explicit output contracts, stated edge-case behavior, one instruction per sentence. Read your prompt asking "what ELSE could this plausibly mean?" — then close the gaps. That habit alone explains much of the gap between senior and junior prompt authors.</div>`,
             takeaways: [
               'Prompts get code ceremony: versioned, reviewed, eval-tested on every change, pinned model versions.',
@@ -474,6 +553,16 @@ export const tracksA = [
             minutes: 7,
             content: `
 <p>An agent, mechanically, is a while-loop: send the model a goal plus tool definitions; the model returns either a tool call (execute it, append the result, loop) or a final answer (done). That you could write in an afternoon. Production agent engineering is everything wrapped around that loop.</p>
+<div class="viz viz-flow">
+<div class="flow-step"><b>1</b>Send goal + tools</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>2</b>Model returns tool call</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>3</b>Execute, append result</div>
+<div class="flow-arrow">→</div>
+<div class="flow-step"><b>4</b>Loop until final answer</div>
+</div>
+<div class="viz-cap">The agent loop in four steps — the afternoon part; guardrails are the work.</div>
 <h3>First decision: do you even need an agent?</h3>
 <p>The industry's hard-won rule: <strong>use a workflow when you know the steps; use an agent when you can't.</strong> Fixed sequence (always: classify → extract → draft)? Chain the calls in code — cheaper, faster, debuggable, deterministic-ish. Open-ended path ("investigate why this invoice doesn't reconcile")? That's agent territory: the model must decide what to look at next based on what it finds. Agents bought where workflows would do is the most common — and most expensive — architecture mistake of the era.</p>
 <h3>Tool design is API design for a clever, literal-minded caller</h3>
@@ -513,6 +602,15 @@ export const tracksA = [
 <li><strong>Golden-set scoring (the core):</strong> your curated 50–500 cases with rubric-based grading. Exact-match where possible (classification, extraction); <strong>LLM-as-judge</strong> for prose quality — with the judge itself calibrated: grade a sample yourself, measure human-judge agreement, iterate the judging prompt until you trust it. An uncalibrated judge is a random-number generator with gravitas.</li>
 <li><strong>Trajectory evals (for agents):</strong> grade the path, not just the destination — did it pick sensible tools, recover from errors, stay in budget, avoid forbidden actions? End-to-end task success rate plus trajectory-quality rubrics.</li>
 </ul>
+<table class="viz-table">
+<thead><tr><th>Layer</th><th>What it checks</th><th>Cost &amp; cadence</th></tr></thead>
+<tbody>
+<tr><td>Assertions</td><td>Schema, required fields, forbidden content, citations resolve</td><td>Near-zero — every commit</td></tr>
+<tr><td>Golden-set scoring</td><td>50–500 curated cases, exact-match or calibrated LLM-judge</td><td>The core — on every change</td></tr>
+<tr><td>Trajectory evals</td><td>Tool choices, error recovery, budget, forbidden actions</td><td>For agents — path, not just destination</td></tr>
+</tbody>
+</table>
+<div class="viz-cap">The three-layer eval pyramid: cheap-and-always at the base, agent paths at the top.</div>
 <h3>Wire it into CI like you mean it</h3>
 <p>Prompt change, model upgrade, retrieval tweak, tool description edit → eval suite runs → scores compared to baseline → regression beyond threshold blocks the merge. Track scores over time on a dashboard; quality is a time series, not a gate you pass once. Sound expensive? A 200-case suite on a mid-tier model costs a few dollars a run — versus one production incident's worth of trust.</p>
 <div class="callout"><strong>Where golden cases come from (the honest answer):</strong> start with 30 you write from the spec — typical, edge, adversarial, must-never-fail. Then mine production forever: every user thumbs-down, every support escalation, every weird log trajectory becomes a candidate case. Six months in, your eval set is your most valuable IP after the product itself — it encodes everything reality taught you.</div>
@@ -537,6 +635,13 @@ export const tracksA = [
 <p>Your AI feature shipped. Now it's 2 a.m. somewhere and the dashboard is doing something interesting. This lesson is the SRE playbook for LLM systems — the four disciplines that keep AI features boring (the highest compliment in operations).</p>
 <h3>1. Cost engineering</h3>
 <p>Token spend is a production metric with a budget and an alert, watched per-feature and per-tenant. The levers, in typical ROI order: <strong>model routing</strong> (classify difficulty, send the easy 80% to a model 10–20× cheaper — your evals certify what the cheap model can survive); <strong>prompt caching</strong> (providers discount repeated context heavily — structure prompts so the stable part stays stable); <strong>context discipline</strong> (retrieval precision over kitchen-sink stuffing); <strong>output caps</strong> (max-token ceilings, because output tokens cost more and stream slowly).</p>
+<div class="viz viz-bars">
+<div class="bar"><span class="bar-l">Model routing</span><span class="bar-track"><i style="width:95%"></i></span><span class="bar-v">biggest win</span></div>
+<div class="bar"><span class="bar-l">Prompt caching</span><span class="bar-track"><i style="width:70%"></i></span><span class="bar-v">high</span></div>
+<div class="bar"><span class="bar-l">Context discipline</span><span class="bar-track"><i style="width:50%"></i></span><span class="bar-v">medium</span></div>
+<div class="bar"><span class="bar-l">Output caps</span><span class="bar-track"><i style="width:35%"></i></span><span class="bar-v">steady</span></div>
+</div>
+<div class="viz-cap">Cost levers in typical ROI order — routing the easy 80% to a 10–20&times; cheaper model usually wins first.</div>
 <h3>2. Latency engineering</h3>
 <p>Users feel time-to-first-token (TTFT) and read at ~5 tokens/sec — so <strong>stream everything user-facing</strong> and front-load value in the output structure. Cut tail latency with hedged requests (fire a backup call at P90, take the first responder). Reasoning models add thinking-time: route to them only when difficulty warrants. Latency budgets belong in the spec next to the quality thresholds.</p>
 <h3>3. Resilience</h3>

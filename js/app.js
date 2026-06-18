@@ -6,7 +6,7 @@ import { renderTree } from './tree.js';
 import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
 import { viewReport } from './report.js';
-import { speechSupported, htmlToSpeech, speak, togglePause, stop as speechStop, speechState } from './speech.js';
+import { speechSupported, htmlToSpeech, speak, speakDialogue, buildLessonDialogue, togglePause, stop as speechStop, speechState } from './speech.js';
 import { buildModuleDeck, openDeck } from './deck.js';
 
 // Resolved label for the learner's optional second hat (id or custom text).
@@ -549,9 +549,10 @@ function viewLesson(moduleId, lessonId) {
         <h1>${esc(lesson.title)}</h1>
       </div>
       ${speechSupported() ? `<div class="tts-bar" id="tts-bar">
-        <button class="tts-btn" id="tts-toggle">🔊 Listen</button>
+        <button class="tts-btn" id="tts-listen">🔊 Listen</button>
+        <button class="tts-btn" id="tts-convo">🎙️ Conversation</button>
         <button class="tts-stop" id="tts-stop" hidden>⏹</button>
-        <span class="tts-hint">Reads this lesson aloud — on your device, free, even offline.</span>
+        <span class="tts-hint">Hear this lesson on your device — free, even offline. Try <b>Conversation</b> for a two-host, podcast-style take.</span>
       </div>` : ''}
       <div class="quick-take">
         <div class="qt-head"><span>⚡ Quick take</span><span class="qt-time">full read ~${lesson.minutes} min</span></div>
@@ -573,24 +574,37 @@ function viewLesson(moduleId, lessonId) {
     </article>
   `);
 
-  // ---- Listen (text-to-speech) ----
+  // ---- Listen / Conversation (text-to-speech) ----
   if (speechSupported()) {
-    const toggle = $('#tts-toggle');
+    const listenBtn = $('#tts-listen');
+    const convoBtn = $('#tts-convo');
     const stopBtn = $('#tts-stop');
     const bar = $('#tts-bar');
+    let mode = null; // 'listen' | 'convo'
+    const labels = { listen: '🔊 Listen', convo: '🎙️ Conversation' };
     const update = ({ state }) => {
-      bar.classList.toggle('active', state !== 'stopped');
-      stopBtn.hidden = state === 'stopped';
-      toggle.textContent = state === 'playing' ? '⏸ Pause' : state === 'paused' ? '▶ Resume' : '🔊 Listen';
+      const active = state !== 'stopped';
+      bar.classList.toggle('active', active);
+      stopBtn.hidden = !active;
+      if (!active) mode = null;
+      [['listen', listenBtn], ['convo', convoBtn]].forEach(([m, btn]) => {
+        if (active && m === mode) btn.textContent = state === 'playing' ? '⏸ Pause' : '▶ Resume';
+        else btn.textContent = labels[m];
+        btn.disabled = active && m !== mode;
+      });
     };
-    toggle.addEventListener('click', () => {
-      if (speechState() === 'stopped') {
-        const text = htmlToSpeech(lesson.title, `${lesson.content}${lesson.quote ? `<p>As ${esc(lesson.quote.by)} put it: ${esc(lesson.quote.text)}</p>` : ''}`);
-        speak(text, update);
+    const start = (m) => () => {
+      if (mode === m && speechState() !== 'stopped') return togglePause();
+      if (speechState() !== 'stopped') speechStop();
+      mode = m;
+      if (m === 'listen') {
+        speak(htmlToSpeech(lesson.title, lesson.content), update);
       } else {
-        togglePause();
+        speakDialogue(buildLessonDialogue(lesson), update);
       }
-    });
+    };
+    listenBtn.addEventListener('click', start('listen'));
+    convoBtn.addEventListener('click', start('convo'));
     stopBtn.addEventListener('click', () => speechStop());
   }
 
@@ -704,7 +718,7 @@ function viewTree() {
     <h1 class="page-title">The Banyan of ${esc(stats.name)}</h1>
     <p class="page-sub">${esc(copy.stageNames[stats.stage])} — ${esc(copy.stageMessages[stats.stage])}</p>
     <div class="card tree-stage"><div id="big-tree"></div></div>
-    <a class="btn btn-ghost report-cta" href="#/report">📄 Generate my AI Readiness Profile</a>
+    <a class="btn btn-primary report-cta" href="#/report">📄 Generate my AI Readiness Profile</a>
     <div class="tree-legend card">
       <h3>🌿 Branches — skills mastered (${stats.branches.length})</h3>
       ${stats.branches.length ? `<div class="chips">${stats.branches.map((b) => `<span class="chip">${esc(b.skill)}</span>`).join('')}</div>` : '<p class="hint">Complete a module (lessons + knowledge check) to grow your first branch.</p>'}
@@ -895,6 +909,7 @@ function viewProfile() {
 
   shell('profile', `
     <h1 class="page-title">Profile</h1>
+    <p class="page-sub">Your role, progress proof, and how the app looks and saves.</p>
     <div class="card profile-card">
       <div class="avatar">${persona?.emoji || '🌱'}</div>
       <div>
@@ -1067,9 +1082,11 @@ function viewReview() {
   const { module: mod, q } = reviewRun.items[reviewRun.idx];
   shell('home', `
     <a class="back" href="#/home" id="review-back">← Home</a>
+    <h1 class="page-title">Daily review 🧠</h1>
+    <p class="page-sub">Spaced retrieval — three quick questions to lock in what you've learned.</p>
     <div class="quiz">
       <div class="quiz-progress">${reviewRun.items.map((_, i) => `<span class="${i < reviewRun.idx ? 'past' : i === reviewRun.idx ? 'now' : ''}"></span>`).join('')}</div>
-      <div class="meta">🧠 Daily review · from ${mod.emoji} ${esc(mod.title)} · ${reviewRun.idx + 1} of ${reviewRun.items.length}</div>
+      <div class="meta">From ${mod.emoji} ${esc(mod.title)} · ${reviewRun.idx + 1} of ${reviewRun.items.length}</div>
       <h2 class="quiz-q">${esc(q.q)}</h2>
       <div class="quiz-options">${q.options.map((o, i) => `<button class="quiz-opt" data-opt="${i}"><span class="opt-letter">${'ABCD'[i]}</span> ${esc(o)}</button>`).join('')}</div>
       <div class="quiz-explain" id="quiz-explain" hidden></div>

@@ -24,6 +24,16 @@ export const foundationA = [
 <li><strong>Deep Learning</strong> — a powerful family of ML that uses layered "neural networks", loosely inspired by the brain. This is what cracked vision, speech and language.</li>
 <li><strong>Generative AI</strong> — deep learning models that <em>create</em> new content: text, images, code, audio. ChatGPT, Claude, Gemini and Midjourney live here.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>AI</div>
+  <div class="flow-arrow">⊃</div>
+  <div class="flow-step"><b>2</b>Machine Learning</div>
+  <div class="flow-arrow">⊃</div>
+  <div class="flow-step"><b>3</b>Deep Learning</div>
+  <div class="flow-arrow">⊃</div>
+  <div class="flow-step"><b>4</b>Generative AI</div>
+</div>
+<div class="viz-cap">The terms nest inside each other — each is a subset of the one before.</div>
 <div class="callout"><strong>Office analogy:</strong> traditional software is a meticulous employee following a thick procedures manual. Machine learning is an employee who shadowed ten thousand customer calls and developed an instinct for them. Neither is magic — they were just trained differently.</div>
 <h3>You already use AI every day</h3>
 <p>Your email spam filter, your phone unlocking with your face, Maps rerouting you around traffic, Netflix recommendations, your bank flagging a suspicious transaction — all machine learning, quietly working for years. What changed recently isn't that AI appeared; it's that AI learned to <em>talk</em>, which made it visible — and useful — to everyone.</p>
@@ -57,6 +67,13 @@ export const foundationA = [
 </ul>
 <h3>Act 3 — Language (2017–2022)</h3>
 <p>In 2017, Google researchers published the <strong>Transformer</strong> architecture ("Attention Is All You Need") — a design that could digest enormous amounts of text in parallel. OpenAI scaled it relentlessly: GPT-2, GPT-3… and in November 2022, <strong>ChatGPT</strong> put a talking transformer in everyone's browser. A hundred million users in two months.</p>
+<div class="viz viz-stats">
+  <div class="vstat"><b>2012</b><span>AlexNet wins ImageNet</span></div>
+  <div class="vstat"><b>2017</b><span>the Transformer paper</span></div>
+  <div class="vstat"><b>2022</b><span>ChatGPT launches</span></div>
+  <div class="vstat"><b>100M</b><span>users in 2 months</span></div>
+</div>
+<div class="viz-cap">The milestones behind the "overnight" revolution.</div>
 <h3>Act 4 — Reasoning and agents (2023–today)</h3>
 <p>Since then: models that see, hear and speak; "reasoning" models that work through problems step by step before answering; and <strong>agents</strong> — AI that doesn't just answer questions but takes multi-step actions: researching, writing code, operating software. By 2026, a majority of large enterprises run AI agents in production for real workflows. That's the wave you're in right now.</p>
 <div class="callout"><strong>The takeaway:</strong> progress came from <em>scale + learning</em>, not from machines "waking up". Each act built on the last — and each one created more demand for people who understand both the technology and the business. People like you.</div>`,
@@ -88,6 +105,15 @@ export const foundationA = [
 <li><strong>Synthesis</strong> — summarizing long documents, comparing options, finding themes across interviews.</li>
 <li><strong>Conversation</strong> — answering questions over a knowledge base, explaining concepts, role-playing a stakeholder before a difficult meeting.</li>
 </ul>
+<table class="viz-table">
+  <thead><tr><th>Sweet spot</th><th>What it does</th><th>In your work</th></tr></thead>
+  <tbody>
+    <tr><td>Drafting</td><td>Produces first versions</td><td>Emails, user stories, test cases, slides</td></tr>
+    <tr><td>Extraction</td><td>Pulls structure from mess</td><td>Requirements from notes, data from PDFs</td></tr>
+    <tr><td>Synthesis</td><td>Condenses and compares</td><td>Summaries, option trade-offs, interview themes</td></tr>
+    <tr><td>Conversation</td><td>Answers and role-plays</td><td>Knowledge-base Q&amp;A, stakeholder rehearsal</td></tr>
+  </tbody>
+</table>
 <p>Notice what's missing: judgment, accountability, relationships, context about <em>your</em> client's politics, and knowing what actually matters. That's the human half — your half.</p>
 <h3>The realistic impact pattern</h3>
 <p>Study after study lands in the same place: AI doesn't replace the role, it <strong>compresses the routine portion of the role.</strong> A consultant using AI well drafts in minutes what took hours, then spends the recovered time on the parts that were always the actual job: framing the problem, checking the answer, persuading the room. The professionals who struggle are not the ones who lack AI skills today — they're the ones who refuse to develop them.</p>
@@ -121,6 +147,16 @@ export const foundationA = [
 <li><strong>3. Treat it like a person (a smart, alien one).</strong> Brief it the way you'd brief a talented new joiner: context, role, examples, what good looks like. You'll get 10x better results than typing keywords.</li>
 <li><strong>4. Assume this is the worst AI you will ever use.</strong> Every capability you learn today compounds, because the tools only get stronger.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Invite AI to the table</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Be the human in the loop</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Treat it like a person</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Assume it only improves</div>
+</div>
+<div class="viz-cap">Mollick's four rules for turning anxiety into a working relationship.</div>
 <h3>Learning it the right way</h3>
 <p>One more mindset, from Andrej Karpathy — one of the clearest teachers in AI. He warns against the <em>"shortification of learning"</em>: ten-minute videos and listicles that feel like learning but are really entertainment. Real learning, he says, should feel like effort — "the mental equivalent of sweating." This platform takes that seriously: short focused lessons, yes, but with <strong>knowledge checks that make you retrieve what you learned</strong>, and <strong>projects that make you apply it</strong>. Your tree out there grows when you do the work, not when you skim.</p>
 <div class="callout"><strong>Your unfair advantage:</strong> you already know how businesses actually run — the messy processes, the politics, the edge cases. AI knowledge is learnable in weeks. Your domain judgment took years. Combining them is the whole game.</div>`,
@@ -222,6 +258,11 @@ export const foundationA = [
 <p>But try writing rules for "is there a cat in this photo?" or "what does this customer email actually want?" Millions of edge cases. Every rule you write, reality breaks.</p>
 <h3>Software 2.0: examples in, rules out</h3>
 <p>Machine learning inverts the process. Instead of writing the rules, you collect <strong>examples with answers</strong> — 100,000 emails labeled spam/not-spam — and the algorithm <em>finds the rules itself</em>, encoding them as millions of numbers inside a model. Andrej Karpathy named this <strong>Software 2.0</strong>: the program isn't written by a programmer; it's <em>grown</em> from data. The developer's job shifts from writing logic to curating examples and defining what "good" means.</p>
+<div class="viz viz-vs">
+  <div class="vs-side"><h4>Software 1.0</h4><p>Humans write explicit rules. Rules in, answers out. Great when the logic is knowable — payroll, invoicing, inventory.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side good"><h4>Software 2.0</h4><p>The model learns rules from labeled examples. Examples in, rules out — encoded as weights. Wins on fuzzy, pattern-rich tasks.</p></div>
+</div>
 <div class="callout"><strong>New-joiner analogy:</strong> Software 1.0 is handing a new hire a 400-page procedures manual. Software 2.0 is having them sit with your best agent for a month and absorb how it's done. The second one handles novel situations far better — and you can't fully explain how it does it. Both of those properties carry over to AI.</div>
 <h3>Why this matters to you</h3>
 <p>Almost every practical property of AI — why it needs data, why it can be confidently wrong, why you test it with examples instead of reading its code, why "garbage in, garbage out" — follows directly from this one idea: <strong>the behavior was learned, not specified.</strong> Hold onto that; the rest of the course keeps cashing it in.</p>`,
@@ -251,7 +292,17 @@ export const foundationA = [
 <h3>4. Learning is what improvement looks like from outside</h3>
 <p>No single step is intelligent. But run the loop long enough and the knob settings come to encode real patterns: "exclamation marks plus money words plus unknown sender — probably spam." Nobody wrote that rule. It condensed out of the data.</p>
 <div class="callout"><strong>Want to feel it in your hands?</strong> Karpathy's famous <em>Zero to Hero</em> series builds this exact loop — knobs, loss, backpropagation — in about 100 lines of Python, from scratch, live. It's the single best deep dive if (and only if) you want to go beneath this course. Not required; everything here stands without it.</div>
-<p>That's the secret. Every AI model you'll ever discuss in a meeting — including the trillion-knob model you chat with — was trained by this same humble loop: <strong>guess, score, nudge, repeat.</strong></p>`,
+<p>That's the secret. Every AI model you'll ever discuss in a meeting — including the trillion-knob model you chat with — was trained by this same humble loop: <strong>guess, score, nudge, repeat.</strong></p>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Guess</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Score (loss)</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Nudge weights</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Repeat</div>
+</div>
+<div class="viz-cap">The training loop, run billions of times.</div>`,
         takeaways: [
           'A model = millions of adjustable numbers (weights). The loss = a single score of how wrong it is.',
           'Training = repeatedly nudging every weight in the direction that lowers the loss (gradient descent).',
@@ -278,6 +329,14 @@ export const foundationA = [
 <p>You provide data with <em>no labels</em> and ask the model to find structure: cluster these 50,000 customers into natural segments; flag transactions that look unlike the others (anomaly detection); group support tickets by theme. It's exploratory — great when you don't know what you're looking for.</p>
 <h3>Reinforcement learning: learning from consequences</h3>
 <p>No answer key at all — the model <em>acts</em>, receives rewards or penalties, and learns strategies that maximize reward over time. This trained AlphaGo to beat the world Go champion, and — surprisingly relevant to you — it's part of how chat assistants were taught to be helpful (more in Module 4).</p>
+<table class="viz-table">
+  <thead><tr><th>Type</th><th>What the data looks like</th><th>Classic use</th></tr></thead>
+  <tbody>
+    <tr><td>Supervised</td><td>Examples with correct answers (labels)</td><td>Fraud, churn, document classification</td></tr>
+    <tr><td>Unsupervised</td><td>Data with no labels</td><td>Customer segments, anomaly detection</td></tr>
+    <tr><td>Reinforcement</td><td>Actions, rewards and penalties</td><td>AlphaGo, training chat assistants</td></tr>
+  </tbody>
+</table>
 <div class="callout"><strong>Quick orientation trick for meetings:</strong> "Did we have labeled historical examples?" → supervised. "Were we hunting for hidden groupings or oddballs?" → unsupervised. "Did it learn by trial, error and reward?" → reinforcement. You now out-orient most of the room.</div>
 <h3>Where do chatbots fit?</h3>
 <p>Large language models are trained with a clever twist on supervised learning: the "label" for each piece of text is simply <em>the next word</em>, which means the internet itself becomes an inexhaustible answer key — no human labeling required. That one trick unlocked everything, and it's exactly where Module 4 picks up.</p>`,
@@ -306,6 +365,15 @@ export const foundationA = [
 <p>A student who memorizes past exam papers aces the practice test and bombs the real one. Models do the same — it's called <strong>overfitting</strong>: nailing the training data while failing on anything new. The defense is simple and universal: <strong>hold back some data the model never saw during training, and grade it on that.</strong> Performance on unseen data is the only number that matters.</p>
 <h3>4. Therefore: evaluation is everything</h3>
 <p>You can't read a model's millions of weights to check if it's correct — the only way to know what a learned system does is to <em>test it on examples and measure</em>. This idea, called <strong>evals</strong>, has become the beating heart of professional AI work in the LLM era, and it shows up again and again in your persona track. When someone demos an AI feature and you ask "how does it perform on cases it hasn't seen — and how do you measure that?", you are asking the expert question.</p>
+<table class="viz-table">
+  <thead><tr><th>Hard truth</th><th>Why it bites</th><th>What to do</th></tr></thead>
+  <tbody>
+    <tr><td>Garbage in, garbage out</td><td>Bad data, bad predictions — fluently</td><td>Treat data quality as the project</td></tr>
+    <tr><td>Bias rides in</td><td>The model mirrors biased history</td><td>Ask where the data came from</td></tr>
+    <tr><td>Overfitting</td><td>Memorizes instead of generalizing</td><td>Grade on held-out, unseen data</td></tr>
+    <tr><td>Evaluation is everything</td><td>You can't read the weights</td><td>Test on examples and measure (evals)</td></tr>
+  </tbody>
+</table>
 <div class="callout"><strong>Module complete — pattern unlocked.</strong> Learned behavior + data as syllabus + testing on unseen examples: with these three ideas you can reason soundly about almost any AI system, including the large language models coming up next.</div>`,
         takeaways: [
           'Data quality and representativeness determine model quality — that work usually IS the project.',
@@ -399,6 +467,16 @@ export const foundationA = [
 <li><strong>Multiplies each by a weight</strong> — the importance assigned to that input (these are the knobs from Module 2).</li>
 <li><strong>Sums them up and applies a threshold</strong> — if the total is strong enough, the neuron "fires" and passes a signal onward.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Take inputs</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Multiply by weights</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Sum and threshold</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4</b>Fire</div>
+</div>
+<div class="viz-cap">One neuron: a tiny weighted vote.</div>
 <div class="callout"><strong>Committee analogy:</strong> a neuron is a committee member deciding whether to escalate an issue. They listen to several colleagues, trust some more than others (weights), and speak up only if the overall signal crosses their threshold. One member is trivial. A hierarchy of thousands, each tuned by training, can collectively recognize a face.</div>
 <h3>A network = neurons in layers</h3>
 <p>Stack neurons into <strong>layers</strong>: the first layer reads raw input (pixel values, word codes), each later layer reads the outputs of the one before, and a final layer produces the answer ("cat: 96%"). Information flows forward through the layers; during training, corrections flow backward (that's backpropagation, adjusting all the weights as in Module 2).</p>
@@ -429,6 +507,14 @@ export const foundationA = [
 <li><strong>Middle layers</strong> combine edges into parts: eyes, noses, textures.</li>
 <li><strong>Late layers</strong> combine parts into wholes: faces, specific people.</li>
 </ul>
+<div class="viz viz-flow">
+  <div class="flow-step"><b>1</b>Edges &amp; gradients</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2</b>Parts: eyes, noses</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3</b>Whole faces</div>
+</div>
+<div class="viz-cap">Each layer builds on the last — a hierarchy that emerges from training.</div>
 <p>Nobody programmed that hierarchy. It <strong>emerges from training</strong>, because layered concepts are simply the most efficient way to compress the patterns in the data. Language models develop the same kind of internal hierarchy for grammar, facts, style and reasoning patterns.</p>
 <h3>The end of hand-crafted features</h3>
 <p>Before deep learning, experts spent years hand-designing "features" — measurable signals like "distance between the eyes" — and the machine only learned the final step. Deep learning automated the expertise itself: <strong>raw data in, useful internal representations learned automatically.</strong> This is called <em>representation learning</em>, and it's why one architecture family conquered vision, speech, language and protein folding within a single decade.</p>
@@ -460,6 +546,15 @@ export const foundationA = [
 <p>Search ranking, Translate, autocomplete, spam filtering, and the recommendation engines that decide what you see on Netflix, YouTube, Spotify, LinkedIn and TikTok — all deep learning, all pre-ChatGPT. (Yes: the algorithmic feed that shapes public attention is a neural network optimizing engagement. Worth knowing when you think about AI's social impact.)</p>
 <h3>Science and industry</h3>
 <p>DeepMind's <strong>AlphaFold</strong> solved protein structure prediction — a 50-year grand challenge — accelerating drug discovery worldwide, and won its creators the 2024 Nobel Prize in Chemistry. Deep learning also powers weather forecasting upgrades, chip design, materials discovery and grid optimization.</p>
+<table class="viz-table">
+  <thead><tr><th>Domain</th><th>What it quietly runs</th></tr></thead>
+  <tbody>
+    <tr><td>Vision</td><td>Face unlock, ID scanning, defect detection, radiology</td></tr>
+    <tr><td>Speech &amp; audio</td><td>Meeting transcription, voice assistants, translation</td></tr>
+    <tr><td>Language &amp; recommendations</td><td>Search ranking, spam filtering, the feeds you scroll</td></tr>
+    <tr><td>Science &amp; industry</td><td>AlphaFold, weather forecasting, chip and materials design</td></tr>
+  </tbody>
+</table>
 <div class="callout"><strong>The pattern to remember:</strong> deep learning wins wherever there is (1) lots of data, (2) complex patterns no human can fully articulate, and (3) tolerance for occasional error backed by human oversight. That three-part test is reusable — apply it whenever someone proposes "let's use AI for X", and you'll sound like you've done this for years.</div>`,
         takeaways: [
           'Deep learning has been production infrastructure for a decade: vision, speech, search, recommendations.',
@@ -489,6 +584,11 @@ export const foundationA = [
 <p>That's the working vocabulary of an effective AI-era professional, and this course delivers all of it. Nobody in your steering committee will ever ask you to derive backpropagation.</p>
 <h3>What builders need</h3>
 <p>Developers <em>building</em> AI features mostly call models through APIs — modern AI engineering is closer to systems integration plus rigorous testing than to mathematics. The deep math lives inside the model providers' research teams.</p>
+<div class="viz viz-vs">
+  <div class="vs-side good"><h4>Practitioners (you)</h4><p>Concepts, not calculus: what training is, what models can and can't do, how quality is measured, what things cost.</p></div>
+  <div class="vs-mid">vs</div>
+  <div class="vs-side"><h4>Builders</h4><p>Mostly API integration plus rigorous testing. The deep math stays with the model providers' research teams.</p></div>
+</div>
 <h3>If you want to go deeper anyway — the Karpathy path</h3>
 <p>If the inner machinery genuinely calls to you, there is a gold-standard route: Karpathy's free <em>Neural Networks: Zero to Hero</em> series. You build everything from scratch in Python — a tiny training engine (micrograd), then language models, then a small GPT — coding along with him, exactly the effortful learning he preaches. Required background: basic Python and a vague memory of high-school calculus. It is genuinely demanding and genuinely transformative. It is also <strong>completely optional</strong> for every track in this platform.</p>
 <div class="callout"><strong>Permission slip, formally issued:</strong> "I understand the concepts deeply and I don't do the calculus" is a legitimate, senior, professional position. The industry runs on people exactly like that. Choose depth where it serves your goals — Karpathy himself teaches on-demand learning: learn what your project needs, when it needs it.</div>`,

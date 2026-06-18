@@ -228,6 +228,29 @@ console.log('\n— Engagement engine: streak shields & daily review —');
   storage.importState(dump);
 }
 
+console.log('\n— Lesson visuals & conversation audio —');
+{
+  const allLessons = [...data.foundation, ...data.tracks.flatMap((t) => t.modules)].flatMap((m) => m.lessons);
+  const withViz = allLessons.filter((l) => /class="viz|class="viz-table/.test(l.content));
+  check(withViz.length >= allLessons.length * 0.85, `≥85% of lessons have an embedded visual (${withViz.length}/${allLessons.length})`);
+  // no broken template literals snuck in
+  const badViz = allLessons.filter((l) => /class="viz/.test(l.content) && /`|\$\{/.test(l.content));
+  check(badViz.length === 0, 'no backticks or ${} inside visual markup');
+  // only documented viz classes used
+  const known = new Set(['viz', 'viz-cap', 'viz-stats', 'vstat', 'viz-table', 'viz-vs', 'vs-side', 'vs-mid', 'good', 'bad', 'viz-bars', 'bar', 'bar-l', 'bar-track', 'bar-v', 'viz-flow', 'flow-step', 'flow-arrow']);
+  let unknown = new Set();
+  for (const l of withViz) {
+    const m = l.content.match(/class="(viz[^"]*|vstat|vs-[a-z]+|bar[^"]*|flow-[a-z]+)"/g) || [];
+    for (const cls of m) cls.replace(/class="|"/g, '').split(/\s+/).forEach((c) => { if (!known.has(c)) unknown.add(c); });
+  }
+  check(unknown.size === 0, `only documented viz classes used${unknown.size ? ' — found: ' + [...unknown].join(',') : ''}`);
+
+  const speech = await import('../js/speech.js');
+  const dlg = speech.buildLessonDialogue(data.foundation[0].lessons[0]);
+  check(dlg.length >= 4 && dlg.some((s) => s.who === 'A') && dlg.some((s) => s.who === 'B'), 'conversation builds a two-host dialogue');
+  check(dlg[0].text.includes(data.foundation[0].lessons[0].title), 'dialogue opens with the lesson title');
+}
+
 console.log('\n— Hybrid roles, intros, deck, speech —');
 check(data.personas.length === 12, `12 personas incl. senior/governance (${data.personas.length})`);
 check(Boolean(data.personaById('gov') && data.personaById('exec')), 'gov + exec personas exist');
