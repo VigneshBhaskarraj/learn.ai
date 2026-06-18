@@ -1,7 +1,7 @@
 // AI Readiness Profile — the shareable, evidence-based artifact of the learner's
 // progress: certified skills, delivered capstones, career direction, next steps.
 // Print-friendly (Save as PDF) so it can go to a manager, client or CV.
-import { pathFor, personaById, projects } from './data/index.js';
+import { pathFor, personaById, personaLabel, projects } from './data/index.js';
 import { getState, progressStyle } from './storage.js';
 import { moduleProgress, projectState, overallStats, treeStats, xpLevel, nextStep, PRO_STAGE_NAMES } from './progress.js';
 
@@ -47,7 +47,7 @@ export function buildReportHtml() {
     </div>
     <div class="report-person">
       <h2>${esc(st.profile.name)}</h2>
-      <div class="report-meta">${persona ? `${persona.emoji} ${esc(persona.label)}` : ''} · ${esc(PRO_STAGE_NAMES[stats.stage])} · ${esc(lvl.name)} level · ${esc(today)}</div>
+      <div class="report-meta">${persona ? `${persona.emoji} ${esc(persona.label)}` : ''}${st.profile.persona2 || st.profile.persona2Custom ? ` · also ${esc(personaLabel(st.profile.persona2, st.profile.persona2Custom))}` : ''} · ${esc(PRO_STAGE_NAMES[stats.stage])} · ${esc(lvl.name)} level · ${esc(today)}</div>
     </div>
     <p class="report-statement"><b>${esc(st.profile.name)}</b> ${esc(READINESS_STATEMENTS[stats.stage])}</p>
 

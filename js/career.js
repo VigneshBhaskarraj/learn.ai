@@ -1,7 +1,7 @@
 // Career Consult — "Where do YOU fit in the AI era?"
 // Questionnaire → one Gemini call (or offline estimate) → 3 tailored pivot roles.
 import { careerQuestions, localCareerEstimate } from './data/careers.js';
-import { trackById, projectById } from './data/index.js';
+import { trackById, projectById, personaLabel } from './data/index.js';
 import { getState, setGeminiKey, setCareerResult, clearCareerResult, setProfile } from './storage.js';
 import { consultCareer, consultCareerViaProxy, CareerConsultError } from './gemini.js';
 import { consultProxyUrl } from './config.js';
@@ -45,7 +45,7 @@ function renderIntro(ctx) {
       <h3>How it works</h3>
       <ul class="ob-points">
         <li>📝 <strong>5-minute questionnaire</strong> — your role, responsibilities, strengths and direction</li>
-        <li>✨ <strong>One AI inference</strong> — your answers are analyzed by Google Gemini (bring your own free key) or by our built-in offline estimator</li>
+        <li>✨ <strong>One AI inference</strong> — your answers are analyzed by learn.ai's secure AI service (no setup needed) or a built-in offline estimator</li>
         <li>🎯 <strong>3 tailored roles</strong> — fit scores, transferable skills, gaps, 90-day plan, readiness signals</li>
         <li>🌿 <strong>Wired into your tree</strong> — each role links to the track and projects here that prepare you for it</li>
       </ul>
@@ -59,7 +59,13 @@ function renderIntro(ctx) {
   `);
   document.getElementById('career-start').addEventListener('click', () => {
     const profile = getState().profile;
-    if (!draft.currentRole && profile) draft.currentRole = '';
+    // Prefill the role from their onboarding choice (incl. second hat) so
+    // hybrid leaders don't have to retype — fully editable.
+    if (!draft.currentRole.trim() && profile) {
+      const primary = personaLabel(profile.persona);
+      const hat = profile.persona2 || profile.persona2Custom ? personaLabel(profile.persona2, profile.persona2Custom) : '';
+      draft.currentRole = hat ? `${primary} — also ${hat}` : primary;
+    }
     formOpen = true;
     ctx.rerender();
   });

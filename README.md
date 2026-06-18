@@ -24,7 +24,9 @@ Most professionals around AI today are *puzzled and a little scared* — endless
 | Layer | Content |
 |---|---|
 | 🌍 **The Roots** (everyone) | 6 foundation modules · 24 lessons: AI demystified · How machines learn · Neural networks & deep learning · The LLM revolution · Working with AI daily · Agents & the modern stack |
-| 🌿 **The Branches** (your persona) | 10 personas (PO/PM, Developer, BA/Consultant, QA, Delivery Leader, Architect, Data Analyst, Designer/UX, Operations, Sales) mapped onto 5 specialist tracks — each persona gets its own reading lens, projects and career guidance |
+| 🌿 **The Branches** (your persona) | 12 personas (PO/PM, Developer, BA/Consultant, QA, Delivery Leader, Architect, Data Analyst, Designer/UX, Operations, Sales, Risk/Governance/Compliance, Executive/Senior Leader) mapped onto 5 specialist tracks — each with its own reading lens, projects and career guidance. Hybrid leaders can add an optional **second hat** (pick from the list or type their own, e.g. "Data Protection Officer") that informs the lens and career consult |
+| 🔊 **Listen** | On-device text-to-speech reads any lesson aloud — works on iOS Safari and Android Chrome, free, even offline. For commutes, accessibility, or just resting your eyes |
+| ✨ **Visual intros** | Every module opens with a swipeable card deck (touch/keyboard/buttons) that previews the journey in ~30 seconds before the text — so it never feels like a wall of words |
 | 🍎 **The Fruits** | 8 hands-on projects in three tiers — 🌱 Starter (30–45 min, browser only), 🌿 Intermediate, 🌳 Advanced — each with what-you-need, tick-off steps, personal notes, downloadable brief (.md), status tracking (not started / in progress / done) and tiered XP |
 | 🧠 **Knowledge checks** | Every module ends with a quiz (explanations included, 70% to pass — effortful retrieval is the point) |
 | 📈 **Tracking** | XP & levels, daily streaks with **streak shields** (a shield earned per 7-day streak absorbs one missed day — forgiveness mechanics that cut churn), weekly activity, resume-where-you-left-off, milestone celebrations with share |

@@ -481,6 +481,52 @@ a.card:hover { transform: translateY(-2px); border-color: rgba(47, 184, 127, 0.4
 .shield { font-size: 0.74rem; }
 .celebrate-actions { display: flex; gap: 10px; justify-content: center; }
 
+/* ---------- second hat (hybrid roles) ---------- */
+.second-hat { margin: 6px 0 18px; padding: 14px 15px; border: 1px dashed var(--card-border); border-radius: 16px; background: rgba(255, 255, 255, 0.03); animation: rise 0.3s ease both; }
+.sh-head { font-size: 0.92rem; font-weight: 750; margin-bottom: 10px; }
+.sh-head span { display: block; font-weight: 500; font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.second-hat input, #profile-hat-custom { width: 100%; margin-top: 10px; padding: 11px 13px; font-size: 0.92rem; color: var(--text); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--card-border); border-radius: 12px; outline: none; }
+.second-hat input:focus, #profile-hat-custom:focus { border-color: var(--accent); }
+.sh-clear { margin-top: 10px; display: inline-block; }
+.hat-tag { font-size: 0.74rem; font-weight: 700; color: var(--gold); background: var(--gold-soft); padding: 2px 8px; border-radius: 8px; }
+.lens-hat { display: block; margin-top: 5px; font-size: 0.84rem; color: var(--muted); }
+
+/* ---------- listen (text-to-speech) ---------- */
+.tts-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; padding: 10px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--card-border); transition: border-color 0.2s; }
+.tts-bar.active { border-color: rgba(47, 184, 127, 0.5); background: var(--accent-soft); }
+.tts-btn { font-family: inherit; font-size: 0.9rem; font-weight: 750; cursor: pointer; color: var(--text); background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 14px; }
+.tts-bar.active .tts-btn { background: var(--accent); color: #06231a; border-color: transparent; }
+.tts-stop { font-size: 0.95rem; cursor: pointer; color: var(--text); background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); border-radius: 10px; padding: 7px 11px; }
+.tts-hint { font-size: 0.74rem; color: var(--muted); flex: 1; min-width: 140px; }
+.intro-btn { margin-bottom: 10px; }
+
+/* ---------- swipe card deck ---------- */
+.deck-overlay { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(5, 12, 10, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.28s ease; }
+.deck-overlay.show { opacity: 1; }
+.deck-frame { position: relative; width: 100%; max-width: 460px; }
+.deck-close { position: absolute; top: -8px; right: 0; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.12); color: #fff; font-size: 1rem; cursor: pointer; }
+.deck-viewport { overflow: hidden; border-radius: 22px; touch-action: pan-y; }
+.deck-track { display: flex; will-change: transform; }
+.deck-card { flex: 0 0 100%; min-height: 62vh; max-height: 560px; display: flex; align-items: center; justify-content: center; padding: 30px 26px; box-sizing: border-box; }
+.deck-card-inner { text-align: center; transform: scale(0.97); }
+.deck-overlay.show .deck-card-inner { animation: deckpop 0.4s ease both; }
+@keyframes deckpop { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: none; } }
+.deck-emoji { font-size: 3.4rem; line-height: 1; margin-bottom: 14px; animation: floaty 4s ease-in-out infinite; }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.deck-badge { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: #06231a; background: linear-gradient(135deg, #46d399, #f4b440); }
+.deck-kicker { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #8fe0bd; margin-bottom: 8px; }
+.deck-card h2 { font-size: 1.5rem; color: #fff; margin: 0 0 12px; letter-spacing: -0.01em; }
+.deck-card p { font-size: 1rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.55; }
+.deck-meta { margin-top: 16px; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
+.deck-start { margin-top: 22px; }
+.deck-dots { display: flex; gap: 6px; justify-content: center; margin: 16px 0 10px; }
+.deck-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all 0.25s; }
+.deck-dots span.on { background: var(--accent); width: 20px; border-radius: 4px; }
+.deck-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.deck-count { font-size: 0.8rem; color: rgba(255,255,255,0.65); font-weight: 650; }
+.deck-skip { display: block; margin: 12px auto 0; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 0.82rem; cursor: pointer; text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .deck-emoji, .deck-card-inner { animation: none; } }
+
 /* ---------- production polish ---------- */
 ::selection { background: rgba(47, 184, 127, 0.35); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
