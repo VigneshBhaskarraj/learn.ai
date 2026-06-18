@@ -1,11 +1,19 @@
 // learn.ai — main application: hash router, views, quiz engine, celebrations.
-import { foundation, tracks, personas, levels, personaById, trackForPersona, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
-import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setProjectStep, setProjectNotes, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle, recordReview, reviewDoneToday } from './storage.js';
+import { foundation, tracks, personas, levels, personaById, personaLabel, trackForPersona, pathFor, moduleById, lessonById, projectById, projectsFor } from './data/index.js';
+import { getState, setProfile, completeLesson, recordQuiz, setProjectCheck, setProjectStep, setProjectNotes, setCelebratedStage, touchActivity, exportState, importState, resetAll, todayKey, progressStyle, setProgressStyle, recordReview, reviewDoneToday, introSeen, markIntroSeen } from './storage.js';
 import { lessonDone, quizState, moduleProgress, projectState, projectStatus, nextStep, overallStats, xpLevel, treeStats, styleCopy, reviewPool, sampleReview, nextMilestone } from './progress.js';
 import { renderTree } from './tree.js';
 import { renderDashboardMini, renderDashboardFull, completionRing, pathCompletionPct } from './dashboard.js';
 import { viewCareer } from './career.js';
 import { viewReport } from './report.js';
+import { speechSupported, htmlToSpeech, speak, togglePause, stop as speechStop, speechState } from './speech.js';
+import { buildModuleDeck, openDeck } from './deck.js';
+
+// Resolved label for the learner's optional second hat (id or custom text).
+function secondHat(profile) {
+  if (!profile || (!profile.persona2 && !profile.persona2Custom)) return '';
+  return personaLabel(profile.persona2, profile.persona2Custom);
+}
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = $('#app');
@@ -153,7 +161,7 @@ function shell(active, content) {
 }
 
 // ---- onboarding ----
-const ob = { step: 0, name: '', persona: null, level: null, style: null };
+const ob = { step: 0, name: '', persona: null, persona2: null, persona2Custom: '', p2custOpen: false, level: null, style: null };
 
 function viewOnboarding() {
   const steps = [obWelcome, obPersona, obLevel, obStyle, obReady];
@@ -179,14 +187,15 @@ function obWelcome() {
     <label class="field"><span>What should we call you?</span>
       <input id="ob-name" type="text" maxlength="40" placeholder="Your name" autocomplete="given-name" value="${esc(ob.name)}"/>
     </label>
-    <button class="btn btn-primary btn-big" id="ob-next">Plant my seed 🌰</button>
+    <button class="btn btn-primary btn-big" id="ob-next">Get started →</button>
     <p class="fineprint">Your progress is saved on this device. No account needed.</p>
   </div>`;
 }
 
 function obPersona() {
+  const others = personas.filter((p) => p.id !== ob.persona);
   return `<div class="ob-card">
-    <h1>What kind of work do you do${ob.name ? ', ' + esc(ob.name) : ''}?</h1>
+    <h1>What's your main role${ob.name ? ', ' + esc(ob.name) : ''}?</h1>
     <p class="lede">Everyone shares the same foundation. Your role curates the rest — the specialist content, the reading lens, the projects, the career guidance.</p>
     <div class="choice-grid persona-grid">
       ${personas.map((p) => `<button class="choice ${ob.persona === p.id ? 'selected' : ''}" data-persona="${p.id}">
@@ -195,6 +204,16 @@ function obPersona() {
         <span class="choice-blurb">${esc(p.blurb)}</span>
       </button>`).join('')}
     </div>
+    ${ob.persona ? `
+    <div class="second-hat">
+      <div class="sh-head">🎩 Wear a second hat? <span>Optional — many leaders do (e.g. delivery <em>and</em> data protection).</span></div>
+      <div class="chips select-chips">
+        ${others.map((p) => `<button class="chip ${ob.persona2 === p.id ? 'selected' : ''}" data-persona2="${p.id}">${p.emoji} ${esc(p.label)}</button>`).join('')}
+        <button class="chip ${ob.persona2Custom || ob.p2custOpen ? 'selected' : ''}" data-persona2-custom>✏️ Something else</button>
+      </div>
+      ${ob.p2custOpen || ob.persona2Custom ? `<input id="ob-persona2-custom" type="text" maxlength="60" placeholder="Type your second role, e.g. Data Protection Officer" value="${esc(ob.persona2Custom || '')}"/>` : ''}
+      ${ob.persona2 || ob.persona2Custom ? `<button class="btn-link sh-clear" id="ob-clear-hat">Clear second hat</button>` : ''}
+    </div>` : ''}
     <button class="btn btn-primary btn-big" id="ob-next" ${ob.persona ? '' : 'disabled'}>Continue</button>
   </div>`;
 }
@@ -243,9 +262,10 @@ function obReady() {
     <div class="path-preview">
       <div class="pp-item">🌍 Foundation · 6 modules · 24 lessons</div>
       <div class="pp-item">${track.emoji} ${esc(track.label)} track · 2 modules · 6 lessons</div>
+      ${ob.persona2 || ob.persona2Custom ? `<div class="pp-item">🎩 Second hat noted: ${esc(personaLabel(ob.persona2, ob.persona2Custom))} — your career guidance will account for it</div>` : ''}
       <div class="pp-item">🍎 Projects · hands-on, portfolio-ready</div>
     </div>
-    <button class="btn btn-primary btn-big" id="ob-finish">Start growing 🌱</button>
+    <button class="btn btn-primary btn-big" id="ob-finish">${ob.style === 'dashboard' ? 'Start learning →' : 'Start growing 🌱'}</button>
   </div>`;
 }
 
@@ -261,8 +281,35 @@ function wireOnboarding() {
     nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#ob-next')?.click(); });
   }
   document.querySelectorAll('[data-persona]').forEach((b) =>
-    b.addEventListener('click', () => { ob.persona = b.dataset.persona; viewOnboarding(); })
+    b.addEventListener('click', () => {
+      ob.persona = b.dataset.persona;
+      if (ob.persona2 === ob.persona) ob.persona2 = null; // can't be your own second hat
+      viewOnboarding();
+    })
   );
+  document.querySelectorAll('[data-persona2]').forEach((b) =>
+    b.addEventListener('click', () => {
+      ob.persona2 = ob.persona2 === b.dataset.persona2 ? null : b.dataset.persona2;
+      ob.persona2Custom = '';
+      ob.p2custOpen = false;
+      viewOnboarding();
+    })
+  );
+  $('[data-persona2-custom]')?.addEventListener('click', () => {
+    ob.p2custOpen = !ob.p2custOpen;
+    ob.persona2 = null;
+    if (!ob.p2custOpen) ob.persona2Custom = '';
+    viewOnboarding();
+    $('#ob-persona2-custom')?.focus();
+  });
+  const p2custInput = $('#ob-persona2-custom');
+  if (p2custInput) p2custInput.addEventListener('input', () => (ob.persona2Custom = p2custInput.value));
+  $('#ob-clear-hat')?.addEventListener('click', () => {
+    ob.persona2 = null;
+    ob.persona2Custom = '';
+    ob.p2custOpen = false;
+    viewOnboarding();
+  });
   document.querySelectorAll('[data-level]').forEach((b) =>
     b.addEventListener('click', () => { ob.level = b.dataset.level; viewOnboarding(); })
   );
@@ -271,7 +318,7 @@ function wireOnboarding() {
   );
   $('#ob-next')?.addEventListener('click', () => { ob.step += 1; viewOnboarding(); });
   $('#ob-finish')?.addEventListener('click', () => {
-    setProfile({ name: ob.name || 'Learner', persona: ob.persona, level: ob.level });
+    setProfile({ name: ob.name || 'Learner', persona: ob.persona, persona2: ob.persona2, persona2Custom: ob.persona2Custom.trim(), level: ob.level });
     setProgressStyle(ob.style || 'tree');
     touchActivity();
     setCelebratedStage(-1); // so the "seed planted" celebration fires
@@ -436,7 +483,9 @@ function viewModule(moduleId) {
   const p = moduleProgress(mod);
   const q = quizState(mod.id);
   const dash = progressStyle() === 'dashboard';
-  const persona = personaById(getState().profile.persona);
+  const profile = getState().profile;
+  const persona = personaById(profile.persona);
+  const hat2 = secondHat(profile);
   const firstOpen = mod.lessons.find((l) => !lessonDone(l.id));
   const resumeHref = firstOpen ? `#/lesson/${mod.id}/${firstOpen.id}` : !q.passed ? `#/quiz/${mod.id}` : null;
   const resumeLabel = !p.lessonsDone ? '▶ Start module' : firstOpen ? '▶ Continue where you left off' : !q.passed ? '🧠 Take the knowledge check' : null;
@@ -451,7 +500,8 @@ function viewModule(moduleId) {
         <div class="meta">Skill: <b>${esc(mod.skill)}</b> · ~${mod.minutes} min ${p.complete ? `· <span class="done-tag">${dash ? '✓ Certified' : '✓ Branch grown'}</span>` : ''}</div>
       </div>
     </div>
-    ${mod.kind === 'foundation' && persona?.lens ? `<div class="lens-card">${persona.emoji} <b>Your lens:</b> ${esc(persona.lens)}</div>` : ''}
+    ${mod.kind === 'foundation' && persona?.lens ? `<div class="lens-card">${persona.emoji} <b>Your lens:</b> ${esc(persona.lens)}${hat2 ? ` <span class="lens-hat">Second hat — ${esc(hat2)}: keep its angle in mind too.</span>` : ''}</div>` : ''}
+    <button class="btn btn-ghost btn-big intro-btn" id="visual-intro">✨ 30-second visual intro</button>
     ${resumeHref ? `<a class="btn btn-primary btn-big module-resume" href="${resumeHref}">${resumeLabel}</a>` : ''}
     <div class="lesson-list">
       ${mod.lessons.map((l, i) => {
@@ -469,6 +519,15 @@ function viewModule(moduleId) {
       </a>
     </div>
   `);
+
+  const launchDeck = () =>
+    openDeck(buildModuleDeck(mod), { onStart: () => go(firstOpen ? `/lesson/${mod.id}/${firstOpen.id}` : `/lesson/${mod.id}/${mod.lessons[0].id}`) });
+  $('#visual-intro').addEventListener('click', launchDeck);
+  // Auto-open the visual intro the first time a learner lands on a fresh module.
+  if (!p.lessonsDone && !introSeen(mod.id)) {
+    markIntroSeen(mod.id);
+    setTimeout(launchDeck, 250);
+  }
 }
 
 // ---- lesson ----
@@ -489,6 +548,11 @@ function viewLesson(moduleId, lessonId) {
         <div class="meta">${mod.emoji} ${esc(mod.title)} · Lesson ${idx + 1} of ${mod.lessons.length}</div>
         <h1>${esc(lesson.title)}</h1>
       </div>
+      ${speechSupported() ? `<div class="tts-bar" id="tts-bar">
+        <button class="tts-btn" id="tts-toggle">🔊 Listen</button>
+        <button class="tts-stop" id="tts-stop" hidden>⏹</button>
+        <span class="tts-hint">Reads this lesson aloud — on your device, free, even offline.</span>
+      </div>` : ''}
       <div class="quick-take">
         <div class="qt-head"><span>⚡ Quick take</span><span class="qt-time">full read ~${lesson.minutes} min</span></div>
         <ul>${lesson.takeaways.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
@@ -508,6 +572,27 @@ function viewLesson(moduleId, lessonId) {
       </div>
     </article>
   `);
+
+  // ---- Listen (text-to-speech) ----
+  if (speechSupported()) {
+    const toggle = $('#tts-toggle');
+    const stopBtn = $('#tts-stop');
+    const bar = $('#tts-bar');
+    const update = ({ state }) => {
+      bar.classList.toggle('active', state !== 'stopped');
+      stopBtn.hidden = state === 'stopped';
+      toggle.textContent = state === 'playing' ? '⏸ Pause' : state === 'paused' ? '▶ Resume' : '🔊 Listen';
+    };
+    toggle.addEventListener('click', () => {
+      if (speechState() === 'stopped') {
+        const text = htmlToSpeech(lesson.title, `${lesson.content}${lesson.quote ? `<p>As ${esc(lesson.quote.by)} put it: ${esc(lesson.quote.text)}</p>` : ''}`);
+        speak(text, update);
+      } else {
+        togglePause();
+      }
+    });
+    stopBtn.addEventListener('click', () => speechStop());
+  }
 
   $('#complete-lesson').addEventListener('click', () => {
     const wasNew = completeLesson(lessonId);
@@ -814,7 +899,7 @@ function viewProfile() {
       <div class="avatar">${persona?.emoji || '🌱'}</div>
       <div>
         <h2>${esc(st.profile.name)}</h2>
-        <p class="meta">${esc(persona?.label || '')} · started as “${esc(level?.label || '')}”</p>
+        <p class="meta">${esc(persona?.label || '')}${secondHat(st.profile) ? ` <span class="hat-tag">🎩 also ${esc(secondHat(st.profile))}</span>` : ''}</p>
         <p class="meta">⭐ ${s.xp} XP · ${esc(lvl.name)} · 🔥 ${s.streak}-day streak</p>
       </div>
     </div>
@@ -825,11 +910,20 @@ function viewProfile() {
       <span class="cc-go">Generate →</span>
     </a>
     <div class="card">
-      <h3>Switch persona track</h3>
+      <h3>Switch main role</h3>
       <p class="hint">Your foundation progress carries over. Only your specialist content changes.</p>
       <div class="chips select-chips">
         ${personas.map((p) => `<button class="chip ${p.id === st.profile.persona ? 'selected' : ''}" data-set-persona="${p.id}">${p.emoji} ${esc(p.label)}</button>`).join('')}
       </div>
+    </div>
+    <div class="card">
+      <h3>🎩 Second hat <span class="hint">(optional)</span></h3>
+      <p class="hint">For hybrid roles — informs your reading lens and career guidance, not your curriculum.</p>
+      <div class="chips select-chips">
+        ${personas.filter((p) => p.id !== st.profile.persona).map((p) => `<button class="chip ${p.id === st.profile.persona2 ? 'selected' : ''}" data-set-hat="${p.id}">${p.emoji} ${esc(p.label)}</button>`).join('')}
+      </div>
+      <input id="profile-hat-custom" type="text" maxlength="60" placeholder="…or type your own, e.g. Data Protection Officer" value="${esc(st.profile.persona2Custom || '')}"/>
+      ${secondHat(st.profile) ? '<button class="btn-link" id="profile-hat-clear">Clear second hat</button>' : ''}
     </div>
     <div class="card">
       <h3>Progress style</h3>
@@ -865,11 +959,33 @@ function viewProfile() {
 
   document.querySelectorAll('[data-set-persona]').forEach((b) =>
     b.addEventListener('click', () => {
-      setProfile({ ...getState().profile, persona: b.dataset.setPersona });
-      toast('Track switched — your specialist path is updated.', '🌿');
+      const prof = { ...getState().profile, persona: b.dataset.setPersona };
+      if (prof.persona2 === prof.persona) prof.persona2 = null; // can't be your own second hat
+      setProfile(prof);
+      toast('Main role switched — your specialist path is updated.', '🌿');
       viewProfile();
     })
   );
+  document.querySelectorAll('[data-set-hat]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const cur = getState().profile;
+      const next = cur.persona2 === b.dataset.setHat ? null : b.dataset.setHat;
+      setProfile({ ...cur, persona2: next, persona2Custom: '' });
+      toast(next ? 'Second hat saved.' : 'Second hat cleared.', '🎩');
+      viewProfile();
+    })
+  );
+  $('#profile-hat-custom')?.addEventListener('change', (e) => {
+    const v = e.target.value.trim();
+    setProfile({ ...getState().profile, persona2Custom: v, persona2: v ? null : getState().profile.persona2 });
+    if (v) toast('Second hat saved.', '🎩');
+    viewProfile();
+  });
+  $('#profile-hat-clear')?.addEventListener('click', () => {
+    setProfile({ ...getState().profile, persona2: null, persona2Custom: '' });
+    toast('Second hat cleared.', '🎩');
+    viewProfile();
+  });
   document.querySelectorAll('[data-set-style]').forEach((b) =>
     b.addEventListener('click', () => {
       setProgressStyle(b.dataset.setStyle);
@@ -991,6 +1107,7 @@ const careerCtx = { shell, esc, toast, go, rerender: () => route() };
 
 // ---- router ----
 function route() {
+  speechStop(); // never let narration bleed across pages
   const hash = location.hash.replace(/^#/, '') || '/';
   const st = getState();
   if (!st.profile) return viewOnboarding();

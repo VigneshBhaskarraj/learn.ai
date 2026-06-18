@@ -14,6 +14,7 @@ const defaultState = () => ({
   activity: {}, // 'YYYY-MM-DD' -> event count
   streak: { count: 0, lastDay: null, shields: 0 },
   review: {}, // 'YYYY-MM-DD' -> { asked, correct } — daily spaced-retrieval sessions
+  introsSeen: {}, // moduleId -> true (visual intro deck shown once)
   xp: 0,
   celebratedStage: 0,
   settings: { reducedMotion: false, geminiKey: '', progressStyle: 'tree' },
@@ -160,6 +161,16 @@ export function setProjectNotes(projectId, text) {
   const p = state.projects[projectId] || { checks: [], steps: [], notes: '', done: false, ts: null };
   p.notes = String(text).slice(0, 2000);
   state.projects[projectId] = p;
+  persist();
+}
+
+export function introSeen(moduleId) {
+  return Boolean((state.introsSeen || {})[moduleId]);
+}
+
+export function markIntroSeen(moduleId) {
+  state.introsSeen = state.introsSeen || {};
+  state.introsSeen[moduleId] = true;
   persist();
 }
 

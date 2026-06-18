@@ -9,9 +9,10 @@ export const foundation = [...foundationA, ...foundationB];
 export const tracks = [...tracksA, ...tracksB];
 export { projects };
 
-// 10 generic personas covering most consulting/IT roles. Each maps onto one
-// of the five content tracks; `lens` is the role-specific reading prompt shown
-// on foundation modules to keep shared content relatable per persona.
+// 12 generic personas covering most consulting/IT roles, including senior and
+// governance hats. Each maps onto one of the five content tracks; `lens` is the
+// role-specific reading prompt shown on foundation modules. Learners can also
+// add an optional *second hat* (see profile.persona2) for hybrid roles.
 export const personas = [
   { id: 'po', label: 'Product Owner / PM', emoji: '🧭', track: 'po',
     blurb: 'You decide what gets built and why.',
@@ -43,10 +44,23 @@ export const personas = [
   { id: 'sales', label: 'Sales / Client Partner', emoji: '🤝', track: 'ba',
     blurb: 'You own the client conversation.',
     lens: 'As you read, build your client narrative: how would you explain this to a buyer, and what would you propose?' },
+  { id: 'gov', label: 'Risk / Governance / Compliance', emoji: '⚖️', track: 'lead',
+    blurb: 'You keep AI safe, compliant and trusted.',
+    lens: 'As you read, ask: what could go wrong, who is accountable, and what control, policy or evidence would you require?' },
+  { id: 'exec', label: 'Executive / Senior Leader', emoji: '👔', track: 'lead',
+    blurb: 'You set direction and own the outcomes.',
+    lens: 'As you read, think strategy and capital: what bet does this justify, what is the risk, and what would you ask your teams to do?' },
 ];
 
 export function personaById(id) {
   return personas.find((p) => p.id === id) || null;
+}
+
+// Resolve a display label for a (possibly custom, free-text) role.
+export function personaLabel(id, custom) {
+  if (custom && custom.trim()) return custom.trim();
+  const p = personaById(id);
+  return p ? p.label : (id || '');
 }
 
 export function trackForPersona(personaId) {

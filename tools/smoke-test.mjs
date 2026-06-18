@@ -177,7 +177,7 @@ check(progress.xpLevel(600, 'dashboard').name === 'Specialist', 'dashboard level
 }
 
 console.log('\n— Personas & readiness report —');
-check(data.personas.length === 10, `10 personas defined (${data.personas.length})`);
+check(data.personas.length === 12, `12 personas defined (${data.personas.length})`);
 for (const p of data.personas) {
   check(Boolean(p.lens && p.blurb && p.emoji), `${p.id} persona complete`);
   const track = data.trackForPersona(p.id);
@@ -226,6 +226,41 @@ console.log('\n— Engagement engine: streak shields & daily review —');
   check(Boolean(ms && ms.target && ms.detail), `milestone computed: "${ms.target}" — ${ms.detail}`);
   storage.resetAll();
   storage.importState(dump);
+}
+
+console.log('\n— Hybrid roles, intros, deck, speech —');
+check(data.personas.length === 12, `12 personas incl. senior/governance (${data.personas.length})`);
+check(Boolean(data.personaById('gov') && data.personaById('exec')), 'gov + exec personas exist');
+check(data.trackForPersona('gov').id === 'lead' && data.trackForPersona('exec').id === 'lead', 'senior personas map to lead track');
+check(data.pathFor('gov').length === 8 && data.pathFor('exec').length === 8, 'senior persona paths = 8 modules');
+check(data.personaLabel('lead') === 'Delivery / Engagement Leader', 'personaLabel resolves id');
+check(data.personaLabel(null, 'Data Protection Officer') === 'Data Protection Officer', 'personaLabel honours custom text');
+{
+  // second hat persists through profile
+  const dump = storage.exportState();
+  storage.setProfile({ name: 'Hybrid', persona: 'lead', persona2: 'gov', persona2Custom: '', level: 'aware' });
+  check(storage.getState().profile.persona2 === 'gov', 'second hat (id) persists');
+  storage.setProfile({ ...storage.getState().profile, persona2: null, persona2Custom: 'Data Protection Officer' });
+  check(storage.getState().profile.persona2Custom === 'Data Protection Officer', 'second hat (custom) persists');
+  // intro-seen tracking
+  check(storage.introSeen('f1') === false, 'intro not seen initially');
+  storage.markIntroSeen('f1');
+  check(storage.introSeen('f1') === true, 'markIntroSeen records');
+  storage.resetAll();
+  storage.importState(dump);
+}
+{
+  // deck builder
+  const deck = await import('../js/deck.js');
+  const cards = deck.buildModuleDeck(data.foundation[0]);
+  check(cards.length === data.foundation[0].lessons.length + 3, 'deck = hook + lessons + skill + cta');
+  check(cards[0].type === 'hook' && cards[cards.length - 1].cta, 'deck has hook first and CTA last');
+}
+{
+  // speech module is import-safe and degrades in Node (no window)
+  const speech = await import('../js/speech.js');
+  check(speech.speechSupported() === false, 'speechSupported false in Node (no crash on import)');
+  check(speech.htmlToSpeech('Title', '<p>Hello world.</p><ul><li>one</li><li>two</li></ul>').startsWith('Title'), 'htmlToSpeech strips HTML and leads with title');
 }
 
 console.log('\n— Tree renderer —');
